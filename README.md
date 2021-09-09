@@ -18,6 +18,6 @@
 
 <li> Version liberada 1.6<p>
 
-**x86** [jdialogs-v1.6_x86.zip](https://github.com/Zukaritasu/jdialogs/jdialogs-v1.6_x86.zip) y
-**x64** [jdialogs-v1.6_x64.zip](https://github.com/Zukaritasu/jdialogs/jdialogs-v1.6_x64.zip)
+**x86** [jdialogs-v1.6_x86.zip](https://github.com/Zukaritasu/jdialogs/blob/main/jdialogs-v1.6_x86.zip) y
+**x64** [jdialogs-v1.6_x64.zip](https://github.com/Zukaritasu/jdialogs/blob/main/jdialogs-v1.6_x64.zip)
 
