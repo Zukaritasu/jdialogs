@@ -8,7 +8,7 @@
 <li>MessageBox
 
 ## Soporte
->La librería actualmente solo tiene soporte para el sistema operativo **Windows**. Si estas interesado en formar parte de este proyecto para crear la librería con soporte para **Linux** o **iOS** me puedes contactar en **Discord** Zukaritasu#9999
+>La librería actualmente solo tiene soporte para el sistema operativo **Windows**. Si estas interesado en formar parte de este proyecto para crear la librería con soporte para **Linux** o **iOS** me puedes contactar en **Discord** Zukaritasu#0132
 
 ## Requisitos 
 <li> <b>Windows Vista</b> o porterior de <b>x86</b> o <b>x64</b>
