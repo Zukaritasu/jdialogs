@@ -1,8 +1,8 @@
 # Windows Common Dialogs
-> Se trata de una librería utilitaria que tiene como función principal poder usar los cuadros de dialogo de Windows en **Java** como puede ser el selector de colores, el selector de fuentes o el explorador de archivos
+> Se trata de una librería utilitaria que tiene como función principal poder usar los cuadros de dialogo de Windows en **Java** como puede ser el selector de colores, el selector de fuentes o el explorador de archivos y carpetas
 ## Tipos de Cuadro de Diálogos Soportados
 <li>ColorDialog
-<li>DirectoryDialog
+<li>FolderBrowserDialog
 <li>FontDialog
 <li>FileDialog
 <li>MessageBox
@@ -16,8 +16,6 @@
 
 ## Versiones
 
-<li> Version liberada 1.6<p>
+<li> Version liberada 1.7<p>
 
-**x86** [jdialogs-v1.6_x86.zip](https://github.com/Zukaritasu/jdialogs/raw/main/jdialogs-v1.6_x86.zip) y
-**x64** [jdialogs-v1.6_x64.zip](https://github.com/Zukaritasu/jdialogs/raw/main/jdialogs-v1.6_x64.zip)
-
+[jdialogs-v1.7.zip](https://github.com/Zukaritasu/jdialogs/raw/main/jdialogs-v1.7.zip)
