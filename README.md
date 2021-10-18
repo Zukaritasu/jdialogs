@@ -1,6 +1,5 @@
 #  Windows Common Dialogs
-Se trata de una librería utilitaria que tiene como función principal poder usar los cuadros de dialogo de Windows en **Java** como puede ser el selector de colores, el selector de fuentes o el explorador de archivos y carpetas
-
+>Se trata de una librería utilitaria que tiene como función principal poder usar los cuadros de dialogo de Windows en **Java** como puede ser el selector de colores, el selector de fuentes o el explorador de archivos y carpetas
 
 ## Tipos de Cuadro de Diálogos Soportados
 <li>ColorDialog
