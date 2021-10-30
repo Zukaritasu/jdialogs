@@ -16,7 +16,12 @@ extern "C" {
 
 	/* Cuadro de dialogo Selector de Carpetas */
 	JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FolderBrowserDialog_showDialog
-		(JNIPARAMS, jstring root, jstring description, jint flags, jlong hwndParent);
+		        			(JNIPARAMS, 
+								jstring root,        /* La carpeta donde se iniciara la busqueda */
+								jstring description, /* Una pequena descripcion de lo que debe hacer el usuario */
+								jint flags,          /* Las banderas del cuadro de dialogo */
+								jlong hwndParent     /* La ventana padre del cuadro de dialogo */
+							);
 
 #ifdef __cplusplus
 }

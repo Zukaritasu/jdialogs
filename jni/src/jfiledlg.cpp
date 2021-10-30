@@ -10,56 +10,123 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
 #define SET_TEXT(mtd, text) \
-		if (text != nullptr && !SUCCEEDED(dialog->mtd(GetStringChars(env, text)))) { \
-			dialog->Release(); \
-			return JNI_FALSE; \
-		} \
+		if (text != nullptr && FAILED(hr = dialog->mtd(GetStringChars(env, text)))) { \
+			goto _FinishDlg_; \
+		}
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+HRESULT ShellItemArrayToStringArray(JNIEnv* env, jobjectArray& array, IShellItemArray* items)
+{
+	HRESULT hr = S_OK;
+	DWORD count = 0;
+	IShellItem* item;
+	LPTSTR text;
+	if (SUCCEEDED(hr = items->GetCount(&count)) && count > 0) {
+		jclass clazz = env->FindClass("java/lang/String");
+		if (clazz == nullptr || (array = env->NewObjectArray((jsize)count, clazz, nullptr)) == nullptr) {
+			hr = E_OUTOFMEMORY;
+			goto _finish_;
+		}
+
+		for (int i = 0, j = 0; i < (int)count; i++) {
+			if (FAILED(hr = items->GetItemAt(i, &item))) {
+				goto _finish_;
+			}
+
+			if (FAILED(item->GetDisplayName(SIGDN_FILESYSPATH, &text))) {
+				item->Release();
+				goto _finish_;
+			}
+
+			jstring element = NEW_STRING(text);
+			if (element != nullptr)
+			{
+				env->SetObjectArrayElement(array, j++, element);
+				env->DeleteLocalRef(element);
+			}
+
+			CoTaskMemFree(text);
+			item->Release();
+			if (element == nullptr)
+			{
+				hr = E_OUTOFMEMORY;
+				goto _finish_;
+			}
+		}
+
+	_finish_:
+		if (clazz != nullptr)
+			env->DeleteLocalRef(clazz);
+		if (FAILED(hr) && array != nullptr)
+			env->DeleteLocalRef(array);
+	}
+
+	return hr;
+}
+
+HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint index)
+{
+	HRESULT hr = S_OK;
+	int half;
+	if (filter != nullptr && (half = env->GetArrayLength(filter)) > 0 && (half % 2) == 0) {
+		COMDLG_FILTERSPEC* filters = new COMDLG_FILTERSPEC[half /= 2];
+		if (filters == nullptr) {
+			return E_OUTOFMEMORY; /* memoria insuficiente */
+		}
+
+		for (jsize i = 0, j = 0; i < half; i++) {
+			filters[i].pszName = GetStringChars(env, 
+				(jstring)env->GetObjectArrayElement(filter, j++));
+			filters[i].pszSpec = GetStringChars(env,
+				(jstring)env->GetObjectArrayElement(filter, j++));
+		}
+
+		if (SUCCEEDED(hr = dialog->SetFileTypes(half, filters))) {
+			hr = dialog->SetFileTypeIndex(index);
+		}
+
+		delete[] filters;
+	}
+	return hr;
+}
 
 JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FileDialog_showDialog
-(JNIPARAMS, jboolean mode, jstring fileNameLabel, jstring okButtonLabel, jstring root, 
-	jstring fileName, jstring title, jstring defaultExt, jint options, jobjectArray filter, 
-	jint filterIndex, jlong hwndParent)
+	(JNIPARAMS, jboolean mode, jstring fileNameLabel, jstring okButtonLabel, jstring root, 
+		jstring fileName, jstring title, jstring defaultExt, jint options, jobjectArray filter, 
+		jint filterIndex, jlong hwndParent)
 {
 	IFileDialog* dialog; /* Objeto de la interfaz IFileDialog */
 	IShellItem* item;    /* Objeto de la interfaz IShellItem */
 	HRESULT hr;          /* Resultado de la funcion */
-	LPTSTR text;         /* En esta variable se guarda el texto */
-
+	LPTSTR text = nullptr;         /* En esta variable se guarda el texto */
+	jclass clazz = nullptr;
+	
 	if (mode) {
 		/* Se crea el objeto para abrir un archivo */
-		IFileOpenDialog* foDialog;
 		hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_ALL,
-			 IID_IFileOpenDialog, reinterpret_cast<void**>(&foDialog));
-		/* Si ocurre un error al crear el objeto se retorna JNI_FALSE */
-		if (!SUCCEEDED(hr)) return JNI_FALSE;
-		dialog = foDialog;
+				IID_IFileOpenDialog, reinterpret_cast<void**>(&dialog));
 	} else {
 		/* Se crea el objeto para guardar un archivo */
-		IFileSaveDialog* fsDialog;
 		hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_ALL,
-			 IID_IFileSaveDialog, reinterpret_cast<void**>(&fsDialog));
-
-		/* Si ocurre un error al crear el objeto se retorna JNI_FALSE */
-		if (!SUCCEEDED(hr)) return JNI_FALSE;
-		dialog = fsDialog;
+				IID_IFileSaveDialog, reinterpret_cast<void**>(&dialog));
 	}
 
-	/* Se asigna el texto al boton OK */
+	if (FAILED(hr)) {
+		return JNI_FALSE;
+	}
+
 	SET_TEXT(SetOkButtonLabel, okButtonLabel);
-	/* Se asigna el titulo al cuadro de dialogo */
 	SET_TEXT(SetTitle, title);
-	/* Se asigna el texto a la etiqueta del nombre de archivo */
 	SET_TEXT(SetFileNameLabel, fileNameLabel);
+
 	/* Se asigna la ruta donde el cuadro de dialogo iniciara la busqueda */
 	if (root != nullptr) {
 		LPITEMIDLIST itemList = ILCreateFromPath(GetStringChars(env, root));
 		if (itemList != nullptr) {
 			if (SUCCEEDED(SHCreateItemFromIDList(itemList, IID_IShellItem,
-				reinterpret_cast<void**>(&item))) && SUCCEEDED(hr = dialog->SetFolder(item))) {
+					reinterpret_cast<void**>(&item)))) {
+				hr = dialog->SetFolder(item);
 				item->Release();
 			}
 			ILFree(itemList);
@@ -68,114 +135,89 @@ JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FileDialog_showDialog
 			un resultado indicando que ocurruio un error, en ese caso es
 			liberado el cuadro de dialogo y se retorna JNI_FALSE */
 			if (FAILED(hr)) {
-				dialog->Release();
-				return JNI_FALSE;
+				goto _FinishDlg_;
 			}
 		}
 	}
 
-	/* Se establecen las opciones */
-	dialog->SetOptions(options);
+	if (FAILED(hr = dialog->SetOptions(options))) {
+		goto _FinishDlg_;
+	}
 
 	/* En el caso que no se requiera seleccionar carpetas se establecen
-	   las opciones de busqueda */
+	las opciones de busqueda */
 	if (!(options & FOS_PICKFOLDERS)) {
-		/* Se asigna la extension por defecto */
 		SET_TEXT(SetDefaultExtension, defaultExt);
-		/* Se asigna el nombre de archivo por defecto */
 		SET_TEXT(SetFileName, fileName);
-		/* Se asigna el filtro de busqueda */
-		if (filter != nullptr) {
-			jsize length = env->GetArrayLength(filter);
-			
-			if (length > 0)
-			{
-				/* La longitud del arreglo debe ser divisible entre 2, si no lo
-				es quiere decir que el filtro se encuentra incompleto por ende
-				no se puede continuar */
-				if ((length % 2) != 0) {
-					env->ThrowNew(env->FindClass("java/lang/RuntimeException"), ERROR_FILTER);
-					return JNI_FALSE;
-				}
 
-				int middle = (length / 2);
-
-				COMDLG_FILTERSPEC * dlgFilter = new COMDLG_FILTERSPEC[middle];
-				if (dlgFilter == nullptr) {
-					return JNI_FALSE; /* memoria insuficiente */
-				}
-
-				for (jsize i = 0, j = 0; i < middle; i++) {
-					dlgFilter[i] = {
-						GetStringChars(env, (jstring)env->GetObjectArrayElement(filter, j++)),
-						GetStringChars(env, (jstring)env->GetObjectArrayElement(filter, j++))
-					};
-				}
-				if (SUCCEEDED(dialog->SetFileTypes(middle, dlgFilter))) {
-					dialog->SetFileTypeIndex(filterIndex);
-				}
-			}
+		if (FAILED(SetFilter(dialog, env, filter, filterIndex))) {
+			goto _FinishDlg_;
 		}
 	}
 	
 	/* Se muestra el cuadro de dialogo */
-	if (!SUCCEEDED(dialog->Show((HWND)hwndParent))) {
-		dialog->Release();
-		return JNI_FALSE;
+	if (FAILED(dialog->Show((HWND)hwndParent))) {
+		goto _FinishDlg_;
 	}
-		
-	jclass clazz = GET_OBJECT_R0(clazz, env->GetObjectClass(obj));
+	
+	if ((clazz = env->GetObjectClass(obj)) == nullptr) {
+		hr = E_OUTOFMEMORY;
+		goto _FinishDlg_;
+	}
 
-	if (mode) {
-		if ((options & FOS_ALLOWMULTISELECT) != 0) {
-			IShellItemArray* items;
-			hr = reinterpret_cast<IFileOpenDialog*>(dialog)->GetResults(&items);
-			if (SUCCEEDED(hr)) {
-				DWORD count = 0;
-				if (SUCCEEDED(items->GetCount(&count))) {
-					jclass arrayClass     = GET_OBJECT_R0(arrayClass, env->FindClass("java/lang/String"));
-					jobjectArray objArray = GET_OBJECT_R0(objArray,
-						                    env->NewObjectArray((jsize)count, arrayClass, nullptr));
-					                        env->DeleteLocalRef(arrayClass);
-					for (int i = 0, j = 0; i < (int)count; i++) {
-						if (SUCCEEDED(items->GetItemAt(i, &item)) && 
-							SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, &text))) {
-							jstring element = GET_OBJECT_R0(element, NEW_STRING(text));
-							env->SetObjectArrayElement(objArray, j++, element);
-							env->DeleteLocalRef(element);
-							item->Release();
-						}
-					}
-					/* selectedFiles */
-					env->SetObjectField(obj, 
-						env->GetFieldID(clazz, "selectedFiles", "[Ljava/lang/String;"), objArray);
-					env->DeleteLocalRef(objArray);
-				}
-				items->Release();
-			}
+	if (mode && (options & FOS_ALLOWMULTISELECT) != 0) {
+		IShellItemArray* items = nullptr;
+		jobjectArray array     = nullptr;
+		if (FAILED(hr = reinterpret_cast<IFileOpenDialog*>(dialog)->GetResults(&items))) {
+			goto _FinishDlg_;
+		}
+
+		if (SUCCEEDED(hr = ShellItemArrayToStringArray(env, array, items))) {
+			env->SetObjectField(obj, 
+				env->GetFieldID(clazz, "selectedFiles", "[Ljava/lang/String;"), array);
+			env->DeleteLocalRef(array);
+		}
+
+		items->Release();
+
+		if (FAILED(hr)) {
+			goto _FinishDlg_;
 		}
 	}
 
-	if ((!mode || !(options & FOS_ALLOWMULTISELECT)) && SUCCEEDED(dialog->GetResult(&item))) {
-		if (SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, &text))) {
-			jstring absolutePath = GET_OBJECT_R0(absolutePath, NEW_STRING(text));
-			/* absolutePath */ 
+	if ((!mode || !(options & FOS_ALLOWMULTISELECT)) && SUCCEEDED(hr = dialog->GetResult(&item))) {
+		jstring absolutePath = nullptr;
+		if (SUCCEEDED(hr = item->GetDisplayName(SIGDN_FILESYSPATH, &text)) && 
+			(absolutePath = NEW_STRING(text)) != nullptr) {
 			env->SetObjectField(obj,
 				env->GetFieldID(clazz, "absolutePath", "Ljava/lang/String;"), absolutePath);
 			env->DeleteLocalRef(absolutePath);
-			item->Release();
+		}
+
+		item->Release();
+
+		if (FAILED(hr)) {
+			goto _FinishDlg_;
+		}
+
+		CoTaskMemFree(text);
+
+		if (absolutePath == nullptr) {
+			hr = E_OUTOFMEMORY;
+			goto _FinishDlg_;
 		}
 	}
 
 	UINT uFilterIndex;
-	if (SUCCEEDED(dialog->GetFileTypeIndex(&uFilterIndex))) {
-		/* filterIndex */
+	if (SUCCEEDED(hr = dialog->GetFileTypeIndex(&uFilterIndex))) {
 		env->SetIntField(obj, 
 			env->GetFieldID(clazz, "filterIndex", "I"), (jint)uFilterIndex);
 	}
 
-	env->DeleteLocalRef(clazz);
+_FinishDlg_:
+	if (clazz != nullptr)
+		env->DeleteLocalRef(clazz);
 	dialog->Release();
 
-	return JNI_TRUE;
+	return SUCCEEDED(hr);
 }

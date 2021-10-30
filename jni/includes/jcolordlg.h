@@ -18,7 +18,10 @@ extern "C" {
 
 	/* Cuadro de dialogo Selector de Color */
 	JNIFUNCTION(jboolean) Java_org_zuky_dialogs_ColorDialog_showDialog
-		(JNIPARAMS, jint flags, jlong hwndParent);
+							(JNIPARAMS, 
+								jint flags,      /* Las banderas del cuadro de dialogo */
+								jlong hwndParent /* Ventana padre */
+							);
 
 #ifdef __cplusplus
 }

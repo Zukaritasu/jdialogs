@@ -11,13 +11,13 @@ JNIFUNCTION(jint) Java_org_zuky_dialogs_MessageBox_showMessage
 	(JNIPARAMS, jlong hwndParent, jstring msg, jstring caption, jint type)
 {
 	return MessageBox((HWND)hwndParent, GetStringChars(env, msg), 
-		GetStringChars(env, caption), type);
+		   GetStringChars(env, caption), type);
 }
 
 JNIFUNCTION(jboolean) Java_org_zuky_dialogs_CommonDialog_validateHandle
 	(JNIPARAMS, jlong hwnd)
 {
-	return IsWindow((HWND)hwnd);
+	return (jboolean)IsWindow((HWND)hwnd);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  reason, LPVOID lpReserved)
@@ -26,12 +26,18 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  reason, LPVOID lpReserved)
 	{
 	case DLL_PROCESS_ATTACH:
 	{
-		if (!SUCCEEDED(CoInitialize(nullptr)) || !SUCCEEDED(OleInitialize(nullptr))) // Error
+		HRESULT hr;
+		if (!SUCCEEDED(hr = CoInitialize(nullptr)) || !SUCCEEDED(hr = OleInitialize(nullptr))) // Error
 		{
-			MessageBox(nullptr, 
-				TEXT("Initialize COM Library or OLE Library error"), 
-				TEXT("Error"), 
-				MB_ICONERROR);
+			TCHAR* message = NULL;
+			DWORD n = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER, 
+				                    NULL, hr, 0, (LPTSTR)&message, 0, NULL);
+			if (n > 0 && message != NULL)
+			{
+				MessageBox(NULL, message, NULL, MB_ICONERROR);
+				LocalFree(message);
+			}
+			
 			return FALSE;
 		}
 		break;

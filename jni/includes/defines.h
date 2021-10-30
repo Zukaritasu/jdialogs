@@ -1,7 +1,6 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // - Zukaritasu
 // - Copyright (c) 2021
-// - Fecha 2012-11-01
 // - Nombre de archivo defines.h
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
@@ -33,15 +32,14 @@
                              ((GetGValue(rgb) & 0xff) <<  8) | \
                              ((GetBValue(rgb) & 0xff) <<  0))
 
-#define GET_OBJECT_R0(nm, val) val; if (nm## == nullptr) return 0;
-#define GET_OBJECT_RV(nm, val) val; if (nm## == nullptr) return;
+#define GET_OBJECT_R0(nm, val) val; if (nm## == nullptr) return JNI_FALSE;
 
 #ifdef UNICODE
-#define TEXTCAST(txt) reinterpret_cast<const jchar*>(txt)
-#define NEW_STRING(str) env->NewString(TEXTCAST(str), lstrlen(str))
+#define NEW_STRING(str) \
+		env->NewString(reinterpret_cast<const jchar*>(str), lstrlen(str))
 #else
-#define TEXTCAST(txt) txt
-#define NEW_STRING(str) env->NewStringUTF(str, lstrlen(str))
+#define NEW_STRING(str) \
+		env->NewStringUTF(str, lstrlen(str))
 #endif // UNICODE
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
@@ -59,10 +57,8 @@ inline LPCTSTR GetStringChars(JNIEnv* env, jstring text)
 	if (text) {
 #ifdef UNICODE
 		const jchar* string = env->GetStringChars(text, nullptr);
-		                      env->ReleaseStringChars(text, nullptr);
 #else
 		const char* string  = env->GetStringUTFChars(text, nullptr);
-		                      env->ReleaseStringUTFChars(text, nullptr);
 #endif // !UNICODE
 		return reinterpret_cast<LPCTSTR>(string);
 	}
