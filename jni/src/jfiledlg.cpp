@@ -18,43 +18,47 @@
 
 HRESULT ShellItemArrayToStringArray(JNIEnv* env, jobjectArray& array, IShellItemArray* items)
 {
-	HRESULT hr = S_OK;
-	DWORD count = 0;
-	IShellItem* item;
-	LPTSTR text;
+	HRESULT hr  = S_OK; /* Resultado de la funcion */
+	DWORD count = 0;    /* Cantidad de elementos del array IShellItemArray */
+	IShellItem* item;   /* Aqui se guarda un elemento del array IShellItemArray */
+	LPTSTR path;        /* Aqui se guarda la ruta absoluta del archivo o carpeta seleccionada */
+	jclass clazz;       /* La clase que representa el tipo de array que se creara */
+	jstring element;    /* Un nuevo elemento que se agregara en el array */
+
 	if (SUCCEEDED(hr = items->GetCount(&count)) && count > 0) {
-		jclass clazz = env->FindClass("java/lang/String");
-		if (clazz == nullptr || (array = env->NewObjectArray((jsize)count, clazz, nullptr)) == nullptr) {
-			hr = E_OUTOFMEMORY;
+		if ((clazz = env->FindClass("java/lang/String")) == nullptr || 
+			(array = env->NewObjectArray((jsize)count, clazz, nullptr)) == nullptr) {
+			hr = E_OUTOFMEMORY; /* memoria insuficiente */
 			goto _finish_;
 		}
 
 		for (int i = 0, j = 0; i < (int)count; i++) {
-			if (FAILED(hr = items->GetItemAt(i, &item))) {
+			if (FAILED(hr = items->GetItemAt(i, &item)))
 				goto _finish_;
-			}
-
-			if (FAILED(item->GetDisplayName(SIGDN_FILESYSPATH, &text))) {
+			if (FAILED(item->GetDisplayName(SIGDN_FILESYSPATH, &path))) {
 				item->Release();
 				goto _finish_;
 			}
 
-			jstring element = NEW_STRING(text);
-			if (element != nullptr)
-			{
+			/* Se crea un nuevo String usando 'path'. En el caso que el nuevo
+			elemento sea null se le asigna E_OUTOFMEMORY a la variable local
+			'hr' y se sale del ciclo */
+			if ((element = NEW_STRING(path)) != nullptr) {
 				env->SetObjectArrayElement(array, j++, element);
 				env->DeleteLocalRef(element);
 			}
 
-			CoTaskMemFree(text);
+			CoTaskMemFree(path);
 			item->Release();
-			if (element == nullptr)
-			{
+			if (element == nullptr) {
 				hr = E_OUTOFMEMORY;
 				goto _finish_;
 			}
 		}
 
+		/* Al llegar a este punto se puede decir que el la funcion termino con
+		exito o con algun error especificado por 'hr'. Si ocurrio algun error
+		se liberan los recursos */
 	_finish_:
 		if (clazz != nullptr)
 			env->DeleteLocalRef(clazz);
@@ -67,14 +71,17 @@ HRESULT ShellItemArrayToStringArray(JNIEnv* env, jobjectArray& array, IShellItem
 
 HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint index)
 {
-	HRESULT hr = S_OK;
-	int half;
+	HRESULT hr = S_OK; /* Resultado de la funcion */
+	int half;          /* La mitad de la longitud del array */
 	if (filter != nullptr && (half = env->GetArrayLength(filter)) > 0 && (half % 2) == 0) {
 		COMDLG_FILTERSPEC* filters = new COMDLG_FILTERSPEC[half /= 2];
 		if (filters == nullptr) {
 			return E_OUTOFMEMORY; /* memoria insuficiente */
 		}
 
+		/* Se establece la descripcion del filtro y las extensiones en
+		cada elemento de 'filters'. No se toma en cuenta si GetObjectArrayElement
+		retorna un objeto que es null */
 		for (jsize i = 0, j = 0; i < half; i++) {
 			filters[i].pszName = GetStringChars(env, 
 				(jstring)env->GetObjectArrayElement(filter, j++));
@@ -82,10 +89,15 @@ HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint in
 				(jstring)env->GetObjectArrayElement(filter, j++));
 		}
 
+		/* Se asignan los filtros y el indice del filtro que se usara en
+		el cuadro de dialogo. Si el metodo SetFileTypes o SetFileTypeIndex
+		retornan un resultado indicando un error, ese sera el resultado
+		que retorna esta funcion */
 		if (SUCCEEDED(hr = dialog->SetFileTypes(half, filters))) {
 			hr = dialog->SetFileTypeIndex(index);
 		}
 
+		/* Se elimina el filtro */
 		delete[] filters;
 	}
 	return hr;
@@ -96,11 +108,11 @@ JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FileDialog_showDialog
 		jstring fileName, jstring title, jstring defaultExt, jint options, jobjectArray filter, 
 		jint filterIndex, jlong hwndParent)
 {
-	IFileDialog* dialog; /* Objeto de la interfaz IFileDialog */
-	IShellItem* item;    /* Objeto de la interfaz IShellItem */
-	HRESULT hr;          /* Resultado de la funcion */
-	LPTSTR text = nullptr;         /* En esta variable se guarda el texto */
-	jclass clazz = nullptr;
+	IFileDialog* dialog;    /* Objeto de la interfaz IFileDialog */
+	IShellItem* item;       /* Objeto de la interfaz IShellItem */
+	HRESULT hr;             /* Resultado de la funcion */
+	LPTSTR text = nullptr;  /* En esta variable se guarda la ruta absoluta del archivo o carpeta seleccionada */
+	jclass clazz = nullptr; /* La clase del objeto de org.zuky.dialogs.FileDialog */
 	
 	if (mode) {
 		/* Se crea el objeto para abrir un archivo */
