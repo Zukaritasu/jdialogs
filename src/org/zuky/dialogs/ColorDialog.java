@@ -1,15 +1,26 @@
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// - Zukaritasu
-// - Copyright (c) 2021
-// - Fecha 2012-11-01
-// - Nombre de archivo ColorDialog.java
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-
+/**
+ * Copyright (C) 2021 Zukaritasu
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
 
 package org.zuky.dialogs;
 
 import java.awt.Color;
 import java.awt.Window;
+import java.util.Objects;
 
 /**
  * Esta clase representa el cuadro de dialogo selector de
@@ -41,6 +52,7 @@ public class ColorDialog extends CommonDialog {
 	 * @see #setColors(int[])
 	 * @see #getColors()
 	 */
+	@NativeValue
 	private final int[] custom = new int[MAX_CUSTOM_COLORS];
 	
 	/**
@@ -48,6 +60,7 @@ public class ColorDialog extends CommonDialog {
 	 * 
 	 * @see #getColor()
 	 */
+	@NativeValue
 	private int color;
 	
 	/**
@@ -56,7 +69,7 @@ public class ColorDialog extends CommonDialog {
 	private int flags;
 
 	/**
-	 * Crea un nuevo cuadro de dialogo selector de colores
+	 * Crea una nueva instancia de esta clase {@link ColorDialog}
 	 * {@link ColorDialog}
 	 * 
 	 * @see #ColorDialog(int[])
@@ -156,7 +169,7 @@ public class ColorDialog extends CommonDialog {
 	 * @exception NullPointerException el parametro es {@code null}
 	 */
 	public void setColors(int[] colors) {
-		if (colors.length > MAX_CUSTOM_COLORS)
+		if (Objects.requireNonNull(colors, "param is null").length > MAX_CUSTOM_COLORS)
 			throw new IllegalArgumentException("length > 16");
 		System.arraycopy(colors, 0, custom, 0, colors.length);
 	}

@@ -1,16 +1,28 @@
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// - Zukaritasu
-// - Copyright (c) 2021
-// - Fecha 2012-11-01
-// - Nombre de archivo CommonDialog.java
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+/**
+ * Copyright (C) 2021 Zukaritasu
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
 
 package org.zuky.dialogs;
 
 import java.awt.Window;
-import java.awt.peer.ComponentPeer;
+import java.io.IOException;
 
 import sun.awt.windows.WComponentPeer;
+import sun.awt.windows.WWindowPeer;
 
 /**
  * Esta clase cuanta con los métodos básicos para crear un cuadro de
@@ -19,33 +31,30 @@ import sun.awt.windows.WComponentPeer;
  * {@link #flag(int, int, boolean)} para modificar un campo de bits
  * <p>
  * Java es un lenguaje multiplataforma por lo cual para obtener el
- * identificador de una ventana se utiliza {@link WComponentPeer} que
- * solo está disponible para Windows. Todo lo implementado en esta
- * clase y las que hereden de esta clase solo tiene soporte para
- * Windows pero en futuras versiones se podrá tener soporte para otros
- * sistemas operativos como <code>Linux</code> y <code>iOS</code>
+ * identificador de una ventana se utiliza la clase {@link WComponentPeer}
+ * que solo está disponible para Windows.
  * 
  * @author Zukaritasu
  *
  */
 abstract class CommonDialog {
 
-	// Se carga la libreria correspondiente a la arquitectura del
-	// sistema
+	// Se carga la libreria
 	static {
-		String filename = "jdialogs";
-		if (System.getenv("PROCESSOR_ARCHITECTURE").contains("64"))
-			filename += "64";
-		System.loadLibrary(filename);
+		try {
+			NativeLibrary.loadLibrary();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Muestra el cuadro de dialogo.
 	 * <P>
-	 * Para tener el efecto modal se requiere de una ventana que este
-	 * en el nivel superior, esa ventana que se pase por parámetro
-	 * será la ventana padre del cuadro de dialogo la cual recibirá
-	 * los mensajes o notificaciones del cuadro de dialogo
+	 * Opcionalmente el metodo requiere de una ventana que este en el
+	 * nivel superior, esa ventana que se pase por parámetro será la
+	 * ventana padre del cuadro de dialogo la cual recibirá los mensajes o
+	 * notificaciones del cuadro de dialogo
 	 * 
 	 * @param  parent la ventana padre
 	 * @return {@code true} si la operación tuvo éxito; {@code false}
@@ -80,23 +89,18 @@ abstract class CommonDialog {
 
 	/**
 	 * Obtiene el identificador de la ventana la cual será usada
-	 * como ventana padre que recibirá los mensajes o nitificaciones
+	 * como ventana padre que recibirá los mensajes o notificaciones
 	 * del cuadro de dialogo. Si el parámetro es <code>null</code> o
 	 * el identificador es inválido el método retornara 0
-	 * <p>
-	 * En una futura versión este método puede ser modificador o
-	 * eliminado pero por los momentos no será declarado como en
-	 * desuso {@link Deprecated}
 	 * 
 	 * @param window la ventana de donde se obtendrá el identificador 
 	 * @return el identificador de la ventana
 	 */
-	@SuppressWarnings("deprecation")
 	static final long getHandleWindow(Window window) {
 		if (window != null && window.isDisplayable()) {
-			ComponentPeer peer = window.getPeer();
-			if (peer instanceof WComponentPeer) {
-				long hwnd = ((WComponentPeer)peer).getHWnd();
+			Object windowPeer = WWindowPeer.getPeerForTarget(window);
+			if (windowPeer != null) {
+				long hwnd = ((WComponentPeer)windowPeer).getHWnd();
 				if (validateHandle(hwnd)) {
 					return hwnd;
 				}
@@ -104,4 +108,6 @@ abstract class CommonDialog {
 		}
 		return 0;
 	}
+	
+	
 }

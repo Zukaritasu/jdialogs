@@ -1,10 +1,20 @@
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// - Zukaritasu
-// - Copyright (c) 2021
-// - Fecha 2012-11-01
-// - Nombre de archivo FolderBrowserDialog.java
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-
+/**
+ * Copyright (C) 2021 Zukaritasu
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
 
 package org.zuky.dialogs;
 
@@ -30,6 +40,7 @@ public class FolderBrowserDialog extends CommonDialog {
 	 * 
 	 * @see #getDisplayName()
 	 */
+	@NativeValue
 	private String displayName;
 	
 	/**
@@ -37,6 +48,7 @@ public class FolderBrowserDialog extends CommonDialog {
 	 * 
 	 * @see #getAbsolutePath()
 	 */
+	@NativeValue
 	private String absolutePath;
 	
 	/**
@@ -58,17 +70,16 @@ public class FolderBrowserDialog extends CommonDialog {
 	private int flags = 0x00000040 | 0x00000004 | 0x00000010 | 0x00000001;
 	
 	/**
-	 * Crea un nuevo cuadro de dialogo selector de carpetas
+	 * Crea una nueva instancia de esta clase {@link FolderBrowserDialog}
 	 * 
 	 * @see #FolderBrowserDialog(File)
 	 * @see #FolderBrowserDialog(String)
 	 */
 	public FolderBrowserDialog() {
-		
 	}
 	
 	/**
-	 * Crea un nuevo cuadro de dialogo selector de carpetas. El
+	 * Crea una nueva instancia de esta clase. El
 	 * constructor recibe como parámetro la carpeta donde el cuadro
 	 * de dialogo iniciara la navegación
 	 * <p>

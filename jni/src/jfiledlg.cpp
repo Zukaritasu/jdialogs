@@ -1,65 +1,61 @@
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// - Zukaritasu
-// - Copyright (c) 2021
-// - Nombre de archivo jfiledlg.cpp
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+/*
+** Copyright (C) 2021 Zukaritasu
+**
+** This program is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #include "jfiledlg.h"
 
 
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-
-#define SET_TEXT(mtd, text) \
-		if (text != nullptr && FAILED(hr = dialog->mtd(GetStringChars(env, text)))) { \
-			goto _FinishDlg_; \
-		}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+typedef HRESULT(STDMETHODCALLTYPE SETTEXTMETHOD)(LPCWSTR);
 
 HRESULT ShellItemArrayToStringArray(JNIEnv* env, jobjectArray& array, IShellItemArray* items)
 {
-	HRESULT hr  = S_OK; /* Resultado de la funcion */
-	DWORD count = 0;    /* Cantidad de elementos del array IShellItemArray */
-	IShellItem* item;   /* Aqui se guarda un elemento del array IShellItemArray */
-	LPTSTR path;        /* Aqui se guarda la ruta absoluta del archivo o carpeta seleccionada */
-	jclass clazz;       /* La clase que representa el tipo de array que se creara */
-	jstring element;    /* Un nuevo elemento que se agregara en el array */
+	HRESULT     hr  = S_OK;
+	DWORD       count = 0;
+	IShellItem* item;
+	LPWSTR      path;
+	jclass      clazz;
+	jstring     element;
 
 	if (SUCCEEDED(hr = items->GetCount(&count)) && count > 0) {
 		if ((clazz = env->FindClass("java/lang/String")) == nullptr || 
 			(array = env->NewObjectArray((jsize)count, clazz, nullptr)) == nullptr) {
-			hr = E_OUTOFMEMORY; /* memoria insuficiente */
-			goto _finish_;
+			hr = E_OUTOFMEMORY;
+			goto error;
 		}
 
 		for (int i = 0, j = 0; i < (int)count; i++) {
 			if (FAILED(hr = items->GetItemAt(i, &item)))
-				goto _finish_;
+				break;
 			if (FAILED(item->GetDisplayName(SIGDN_FILESYSPATH, &path))) {
 				item->Release();
-				goto _finish_;
+				break;
 			}
 
-			/* Se crea un nuevo String usando 'path'. En el caso que el nuevo
-			elemento sea null se le asigna E_OUTOFMEMORY a la variable local
-			'hr' y se sale del ciclo */
-			if ((element = NEW_STRING(path)) != nullptr) {
+			if ((element = env->NewString((jpcchar)path, lstrlen(path))) != nullptr) {
 				env->SetObjectArrayElement(array, j++, element);
 				env->DeleteLocalRef(element);
 			}
 
 			CoTaskMemFree(path);
 			item->Release();
-			if (element == nullptr) {
-				hr = E_OUTOFMEMORY;
-				goto _finish_;
-			}
+			if (element == nullptr)
+				break;
 		}
 
-		/* Al llegar a este punto se puede decir que el la funcion termino con
-		exito o con algun error especificado por 'hr'. Si ocurrio algun error
-		se liberan los recursos */
-	_finish_:
+	error:
 		if (clazz != nullptr)
 			env->DeleteLocalRef(clazz);
 		if (FAILED(hr) && array != nullptr)
@@ -71,119 +67,116 @@ HRESULT ShellItemArrayToStringArray(JNIEnv* env, jobjectArray& array, IShellItem
 
 HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint index)
 {
-	HRESULT hr = S_OK; /* Resultado de la funcion */
-	int half;          /* La mitad de la longitud del array */
-	if (filter != nullptr && (half = env->GetArrayLength(filter)) > 0 && (half % 2) == 0) {
-		COMDLG_FILTERSPEC* filters = new COMDLG_FILTERSPEC[half /= 2];
+	HRESULT hr = S_OK;
+	int count, half;
+	if (filter != nullptr && (count = env->GetArrayLength(filter)) > 0 && (count % 2) == 0) {
+		COMDLG_FILTERSPEC* filters = new COMDLG_FILTERSPEC[half = count / 2];
 		if (filters == nullptr) {
-			return E_OUTOFMEMORY; /* memoria insuficiente */
+			return E_OUTOFMEMORY;
 		}
-
-		/* Se establece la descripcion del filtro y las extensiones en
-		cada elemento de 'filters'. No se toma en cuenta si GetObjectArrayElement
-		retorna un objeto que es null */
+		
 		for (jsize i = 0, j = 0; i < half; i++) {
-			filters[i].pszName = GetStringChars(env, 
-				(jstring)env->GetObjectArrayElement(filter, j++));
-			filters[i].pszSpec = GetStringChars(env,
-				(jstring)env->GetObjectArrayElement(filter, j++));
+			filters[i].pszName = (LPCWSTR)env->GetStringChars(
+				(jstring)env->GetObjectArrayElement(filter, j++), nullptr);
+			filters[i].pszSpec = (LPCWSTR)env->GetStringChars(
+				(jstring)env->GetObjectArrayElement(filter, j++), nullptr);
 		}
 
-		/* Se asignan los filtros y el indice del filtro que se usara en
-		el cuadro de dialogo. Si el metodo SetFileTypes o SetFileTypeIndex
-		retornan un resultado indicando un error, ese sera el resultado
-		que retorna esta funcion */
 		if (SUCCEEDED(hr = dialog->SetFileTypes(half, filters))) {
 			hr = dialog->SetFileTypeIndex(index);
 		}
 
-		/* Se elimina el filtro */
+		for (jsize i = 0; i < count; i++) {
+			env->ReleaseStringChars((jstring)env->GetObjectArrayElement(filter, i), 
+				(jpcchar)((LPCWSTR*)filters)[i]);
+		}
+
 		delete[] filters;
 	}
 	return hr;
 }
+
+#define RESULT_ERROR(e) \
+		if (FAILED(e)) { \
+			goto _FinishDlg_; \
+		}
+
+#define SETTEXT(func, text) \
+		if (text != nullptr) { \
+			hr = func((LPCWSTR)(aux = env->GetStringChars(text, nullptr))); \
+			env->ReleaseStringChars(text, aux); \
+			RESULT_ERROR(hr); \
+		}
 
 JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FileDialog_showDialog
 	(JNIPARAMS, jboolean mode, jstring fileNameLabel, jstring okButtonLabel, jstring root, 
 		jstring fileName, jstring title, jstring defaultExt, jint options, jobjectArray filter, 
 		jint filterIndex, jlong hwndParent)
 {
-	IFileDialog* dialog;    /* Objeto de la interfaz IFileDialog */
-	IShellItem* item;       /* Objeto de la interfaz IShellItem */
-	HRESULT hr;             /* Resultado de la funcion */
-	LPTSTR text = nullptr;  /* En esta variable se guarda la ruta absoluta del archivo o carpeta seleccionada */
-	jclass clazz = nullptr; /* La clase del objeto de org.zuky.dialogs.FileDialog */
-	
+	IFileDialog* dialog;
+	IShellItem* item;
+	HRESULT hr;
+	LPWSTR text = nullptr;
+	jclass clazz = nullptr;
+	const jchar* aux;
+
 	if (mode) {
-		/* Se crea el objeto para abrir un archivo */
 		hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_ALL,
 				IID_IFileOpenDialog, reinterpret_cast<void**>(&dialog));
 	} else {
-		/* Se crea el objeto para guardar un archivo */
 		hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_ALL,
 				IID_IFileSaveDialog, reinterpret_cast<void**>(&dialog));
 	}
 
 	if (FAILED(hr)) {
+		ShowError(env, hr);
 		return JNI_FALSE;
 	}
 
-	SET_TEXT(SetOkButtonLabel, okButtonLabel);
-	SET_TEXT(SetTitle, title);
-	SET_TEXT(SetFileNameLabel, fileNameLabel);
+	auto method = [&](SETTEXTMETHOD settext, jstring text) {
+		aux = env->GetStringChars(text, nullptr);
+		HRESULT result = settext((LPCWSTR)aux);
+		env->ReleaseStringChars(text, aux);
+		return result;
+	};
 
-	/* Se asigna la ruta donde el cuadro de dialogo iniciara la busqueda */
+	SETTEXT(dialog->SetOkButtonLabel, okButtonLabel);
+	SETTEXT(dialog->SetTitle, title);
+	SETTEXT(dialog->SetFileNameLabel, fileNameLabel);
+	
 	if (root != nullptr) {
-		LPITEMIDLIST itemList = ILCreateFromPath(GetStringChars(env, root));
+		LPITEMIDLIST itemList = ILCreateFromPath((PCWSTR)(aux = env->GetStringChars(root, nullptr)));
+		env->ReleaseStringChars(root, aux);
 		if (itemList != nullptr) {
-			if (SUCCEEDED(SHCreateItemFromIDList(itemList, IID_IShellItem,
+			if (SUCCEEDED(SHCreateItemFromIDList(itemList, IID_IShellItem, 
 					reinterpret_cast<void**>(&item)))) {
 				hr = dialog->SetFolder(item);
 				item->Release();
 			}
 			ILFree(itemList);
-
-			/* En el caso que el metodo dialog->SetFolder(item) retorna
-			un resultado indicando que ocurruio un error, en ese caso es
-			liberado el cuadro de dialogo y se retorna JNI_FALSE */
-			if (FAILED(hr)) {
-				goto _FinishDlg_;
-			}
+			RESULT_ERROR(hr);
 		}
 	}
 
-	if (FAILED(hr = dialog->SetOptions(options))) {
-		goto _FinishDlg_;
-	}
+	RESULT_ERROR(hr = dialog->SetOptions(options));
 
-	/* En el caso que no se requiera seleccionar carpetas se establecen
-	las opciones de busqueda */
 	if (!(options & FOS_PICKFOLDERS)) {
-		SET_TEXT(SetDefaultExtension, defaultExt);
-		SET_TEXT(SetFileName, fileName);
-
+		SETTEXT(dialog->SetDefaultExtension, defaultExt);
+		SETTEXT(dialog->SetFileName, fileName);
 		if (FAILED(SetFilter(dialog, env, filter, filterIndex))) {
 			goto _FinishDlg_;
 		}
 	}
 	
-	/* Se muestra el cuadro de dialogo */
-	if (FAILED(dialog->Show((HWND)hwndParent))) {
-		goto _FinishDlg_;
-	}
-	
-	if ((clazz = env->GetObjectClass(obj)) == nullptr) {
-		hr = E_OUTOFMEMORY;
-		goto _FinishDlg_;
-	}
+	RESULT_ERROR(hr = dialog->Show((HWND)hwndParent));
+
+	clazz = env->GetObjectClass(obj);
 
 	if (mode && (options & FOS_ALLOWMULTISELECT) != 0) {
 		IShellItemArray* items = nullptr;
-		jobjectArray array     = nullptr;
-		if (FAILED(hr = reinterpret_cast<IFileOpenDialog*>(dialog)->GetResults(&items))) {
-			goto _FinishDlg_;
-		}
-
+		jobjectArray array = nullptr;
+		
+		RESULT_ERROR(hr = hr = reinterpret_cast<IFileOpenDialog*>(dialog)->GetResults(&items));
 		if (SUCCEEDED(hr = ShellItemArrayToStringArray(env, array, items))) {
 			env->SetObjectField(obj, 
 				env->GetFieldID(clazz, "selectedFiles", "[Ljava/lang/String;"), array);
@@ -192,15 +185,13 @@ JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FileDialog_showDialog
 
 		items->Release();
 
-		if (FAILED(hr)) {
-			goto _FinishDlg_;
-		}
+		RESULT_ERROR(hr);
 	}
 
 	if ((!mode || !(options & FOS_ALLOWMULTISELECT)) && SUCCEEDED(hr = dialog->GetResult(&item))) {
 		jstring absolutePath = nullptr;
 		if (SUCCEEDED(hr = item->GetDisplayName(SIGDN_FILESYSPATH, &text)) && 
-			(absolutePath = NEW_STRING(text)) != nullptr) {
+			(absolutePath = env->NewString((jpcchar)text, lstrlen(text))) != nullptr) {
 			env->SetObjectField(obj,
 				env->GetFieldID(clazz, "absolutePath", "Ljava/lang/String;"), absolutePath);
 			env->DeleteLocalRef(absolutePath);
@@ -208,14 +199,10 @@ JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FileDialog_showDialog
 
 		item->Release();
 
-		if (FAILED(hr)) {
-			goto _FinishDlg_;
-		}
-
+		RESULT_ERROR(hr);
 		CoTaskMemFree(text);
 
 		if (absolutePath == nullptr) {
-			hr = E_OUTOFMEMORY;
 			goto _FinishDlg_;
 		}
 	}
@@ -230,6 +217,8 @@ _FinishDlg_:
 	if (clazz != nullptr)
 		env->DeleteLocalRef(clazz);
 	dialog->Release();
+	
+	ShowError(env, hr);
 
 	return SUCCEEDED(hr);
 }

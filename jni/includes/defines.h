@@ -1,8 +1,19 @@
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// - Zukaritasu
-// - Copyright (c) 2021
-// - Nombre de archivo defines.h
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+/*
+** Copyright (C) 2021 Zukaritasu
+**
+** This program is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #pragma once
 
@@ -11,15 +22,14 @@
 
 #include <windows.h>
 #include <commdlg.h>
-#include <ColorDlg.h>
 #include <shlobj.h>
 #include <shellapi.h>
 
+#include <stdio.h>
+
 #include "jni.h"
 
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// DECLARACION DE MACROS
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+typedef const jchar* jpcchar;
 
 #define JNIFUNCTION(type) JNIEXPORT type JNICALL
 #define JNIPARAMS JNIEnv* env, jobject obj
@@ -32,37 +42,23 @@
                              ((GetGValue(rgb) & 0xff) <<  8) | \
                              ((GetBValue(rgb) & 0xff) <<  0))
 
-#define GET_OBJECT_R0(nm, val) val; if (nm## == nullptr) return JNI_FALSE;
+#define STRING_PATH "Ljava/lang/String;"
 
-#ifdef UNICODE
-#define NEW_STRING(str) \
-		env->NewString(reinterpret_cast<const jchar*>(str), lstrlen(str))
-#else
-#define NEW_STRING(str) \
-		env->NewStringUTF(str, lstrlen(str))
-#endif // UNICODE
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// DECLARACION DE CONSTANTES
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-
-#define STRING_PATH         "Ljava/lang/String;"
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// DECLARACION DE FUNCIONES
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-
-inline LPCTSTR GetStringChars(JNIEnv* env, jstring text)
+inline void ShowError(JNIEnv* env, unsigned long code = 0L)
 {
-	if (text) {
-#ifdef UNICODE
-		const jchar* string = env->GetStringChars(text, nullptr);
-#else
-		const char* string  = env->GetStringUTFChars(text, nullptr);
-#endif // !UNICODE
-		return reinterpret_cast<LPCTSTR>(string);
+	unsigned long error = (code == 0L) ? GetLastError() : code;
+	if (error != 0L) {
+		char* message = nullptr;
+		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER, nullptr, error, 0, (char*)&message, 0, nullptr);
+		if (message != nullptr) {
+			if (env == nullptr) {
+				fprintf(stderr, message);
+			} else {
+				env->ThrowNew(env->FindClass("org/zuky/dialogs/WindowsException"), message);
+			}
+			LocalFree(message);
+		}
 	}
-	return nullptr;
 }
 
 #endif // !DEFINES_H

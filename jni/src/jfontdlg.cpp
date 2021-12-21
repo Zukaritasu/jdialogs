@@ -1,100 +1,81 @@
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// - Zukaritasu
-// - Copyright (c) 2021
-// - Nombre de archivo jfontdlg.cpp
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+/*
+** Copyright (C) 2021 Zukaritasu
+**
+** This program is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #include "jfontdlg.h"
 
-/*
-** 
-**
-*/
-void InitializeFont(JNIEnv* env, LOGFONT& font, jstring name, jint style, jint size)
-{
-	if (name != nullptr) {
-		/* Se inicializa la estructura LOGFONT con los valores pasados
-		   por parametro y algunos valores predeterminados */
-		lstrcpy(font.lfFaceName, GetStringChars(env, name));
-		font.lfHeight         = size * (-1);
-		font.lfWeight         = ((style & 1) != 0) ? FW_BOLD : FW_NORMAL;
-		font.lfItalic         = ((style & 2) != 0) ? 0xff : 0x0;
-		font.lfCharSet        = DEFAULT_CHARSET;
-		font.lfOutPrecision   = OUT_TT_PRECIS;
-		font.lfQuality        = PROOF_QUALITY;
-		font.lfPitchAndFamily = FF_ROMAN;
-	}
-}
 
-/*
-** En este bloque de codigo solo se implementa las funciones basicas
-** permitidas por el cuadro de dialogo para tener compatibilidad con
-** la clase java.awt.Font.
-*/
 JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FontDialog_showDialog
 	(JNIPARAMS, jstring name, jint style, jint size, jint flags, jint color, jlong hwndParent)
 {
-	/* Fuente de inicializacion. La bandera CF_INITTOLOGFONTSTRUCT debe estar
-	presente, de lo contrario el cuadro de dialogo se mostrara sin ninguna
-	fuente seleccionada */
-	LOGFONT logFont{};
+	LOGFONT _font_{};
 
-	/* Se inicializa la estructura CHOOSEFONT */
 	CHOOSEFONT choose{};
-	choose.lStructSize = sizeof(choose);
+	choose.lStructSize = sizeof(CHOOSEFONT);
 	choose.Flags       = flags;
 	choose.hInstance   = GetModuleHandle(nullptr);
-	choose.lpLogFont   = &logFont;
+	choose.lpLogFont   = &_font_;
 	choose.hwndOwner   = (HWND)hwndParent;
 
-	/* Se asigna el color del texto de muestra, para ello debe
-	estar presente la bandera CF_EFFECTS. La macro RGBATORGB
-	remueve el canal alpha para solo obtener el color RGB (24 bits)
-	sin transparencia */
 	if ((flags & CF_EFFECTS) != 0)
 		choose.rgbColors = RGBATORGB(color);
-	/* Se inicializa la estructura LOGFONT */
-	if ((flags & CF_INITTOLOGFONTSTRUCT) != 0)
-		InitializeFont(env, logFont, name, style, size);
+	if ((flags & CF_INITTOLOGFONTSTRUCT) != 0 && name != nullptr)
+	{
+		const jchar* name_f = env->GetStringChars(name, nullptr);
+		lstrcpy(_font_.lfFaceName, (const wchar_t*)name_f);
+		env->ReleaseStringChars(name, name_f);
+
+		_font_.lfHeight         = size * (-1);
+		_font_.lfWeight         = ((style & 1) != 0) ? FW_BOLD : FW_NORMAL;
+		_font_.lfItalic         = ((style & 2) != 0) ? 0xff : 0x0;
+		_font_.lfCharSet        = DEFAULT_CHARSET;
+		_font_.lfOutPrecision   = OUT_TT_PRECIS;
+		_font_.lfQuality        = PROOF_QUALITY;
+		_font_.lfPitchAndFamily = FF_ROMAN;
+	}
 
 	if (ChooseFont(&choose))
 	{
-		/* Se establece el estilo de la fuente. La clase Font solo
-		tiene 2 tipos de grosor de fuente los cuales son NORMAL
-		y BOLD que son los grosores mas comunes */
-		style = ((logFont.lfWeight == FW_BOLD) ? 1 : 0) | 
-		        ((logFont.lfItalic == 0xff)    ? 2 : 0);
+		style = ((_font_.lfWeight == FW_BOLD) ? 1 : 0) | 
+		        ((_font_.lfItalic == 0xff)    ? 2 : 0);
 
-		jclass clazzFont = GET_OBJECT_R0(clazzFont, env->FindClass("java/awt/Font"));
-		jmethodID method = env->GetMethodID(clazzFont, "<init>", "(Ljava/lang/String;II)V");
-		jstring faceName = GET_OBJECT_R0(faceName, NEW_STRING(logFont.lfFaceName));
+		jclass class_f   = 
+			env->FindClass("java/awt/Font");
+		jmethodID method = 
+			env->GetMethodID(class_f, "<init>", "(Ljava/lang/String;II)V");
+		jstring faceName = 
+			env->NewString((jpcchar)_font_.lfFaceName, lstrlen(_font_.lfFaceName));
+		jobject font     = 
+			env->NewObject(class_f, method, faceName, style, _font_.lfHeight * (-1));
 
-		/* Se crea el objeto de la clase Font con los valores que
-		selecciono el usuario en el cuadro de dialogo.
-		Se llama el constructor Font(String, int, int) para dicho proposito */
-		jobject font     = GET_OBJECT_R0(font, env->NewObject(clazzFont, method, faceName,
-			               style, logFont.lfHeight * (-1)));
-
-		jclass clazz     = GET_OBJECT_R0(clazz, env->GetObjectClass(obj));
-
+		jclass clazz = env->GetObjectClass(obj);
 		env->SetObjectField(obj, env->GetFieldID(clazz, "font", "Ljava/awt/Font;"), font);
-		if ((flags & CF_EFFECTS) != 0)
+		if ((flags & CF_EFFECTS) != 0) 
 		{
-			/* Si los efectos estaban habilitados se le asigna el
-			color del texto de muestra a la variable global 'color' de
-			tipo int. No se toma en cuenta si el usuario selecciono un
-			color distinto al origina */
 			env->SetIntField(obj,
 				env->GetFieldID(clazz, "color", "I"), RGBTORGBA(choose.rgbColors));
 		}
 
-		/* Se liberan los recursor */
 		env->DeleteLocalRef(clazz);
-		env->DeleteLocalRef(clazzFont);
+		env->DeleteLocalRef(class_f);
 		env->DeleteLocalRef(font);
 		env->DeleteLocalRef(faceName);
 
 		return JNI_TRUE;
 	}
+	ShowError(env);
 	return JNI_FALSE;
 }

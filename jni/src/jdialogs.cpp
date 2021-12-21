@@ -1,8 +1,19 @@
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// - Zukaritasu
-// - Copyright (c) 2021
-// - Nombre de archivo jdialogs.cpp
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+/*
+** Copyright (C) 2021 Zukaritasu
+**
+** This program is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #include "jdialogs.h"
 
@@ -10,8 +21,12 @@
 JNIFUNCTION(jint) Java_org_zuky_dialogs_MessageBox_showMessage
 	(JNIPARAMS, jlong hwndParent, jstring msg, jstring caption, jint type)
 {
-	return MessageBox((HWND)hwndParent, GetStringChars(env, msg), 
-		   GetStringChars(env, caption), type);
+	const jchar* _msg_ = env->GetStringChars(msg, nullptr);
+	const jchar* _caption_ = env->GetStringChars(caption, nullptr);
+	int result = MessageBox((HWND)hwndParent, (LPCWSTR)_msg_, (LPCWSTR)_caption_, type);
+	env->ReleaseStringChars(msg, _msg_);
+	env->ReleaseStringChars(caption, _caption_);
+	return result;
 }
 
 JNIFUNCTION(jboolean) Java_org_zuky_dialogs_CommonDialog_validateHandle
@@ -20,35 +35,20 @@ JNIFUNCTION(jboolean) Java_org_zuky_dialogs_CommonDialog_validateHandle
 	return (jboolean)IsWindow((HWND)hwnd);
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  reason, LPVOID lpReserved)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved)
 {
-	switch (reason)
-	{
-	case DLL_PROCESS_ATTACH:
-	{
-		HRESULT hr;
-		if (!SUCCEEDED(hr = CoInitialize(nullptr)) || !SUCCEEDED(hr = OleInitialize(nullptr))) // Error
-		{
-			TCHAR* message = NULL;
-			DWORD n = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER, 
-				                    NULL, hr, 0, (LPTSTR)&message, 0, NULL);
-			if (n > 0 && message != NULL)
-			{
-				MessageBox(NULL, message, NULL, MB_ICONERROR);
-				LocalFree(message);
+	switch (reason) {
+		case DLL_PROCESS_DETACH:
+			OleUninitialize();
+			break;
+		case DLL_PROCESS_ATTACH: {
+			HRESULT hr;
+			if (FAILED(hr = OleInitialize(nullptr))) {
+				ShowError(nullptr, hr);
+				return FALSE;
 			}
-			
-			return FALSE;
+			break;
 		}
-		break;
-	}
-	break;
-	case DLL_THREAD_ATTACH:
-	case DLL_THREAD_DETACH:
-	case DLL_PROCESS_DETACH:
-		CoUninitialize();
-		OleUninitialize();
-		break;
 	}
 	return TRUE;
 }
