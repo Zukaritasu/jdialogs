@@ -133,13 +133,6 @@ JNIFUNCTION(jboolean) Java_org_zuky_dialogs_FileDialog_showDialog
 		return JNI_FALSE;
 	}
 
-	auto method = [&](SETTEXTMETHOD settext, jstring text) {
-		aux = env->GetStringChars(text, nullptr);
-		HRESULT result = settext((LPCWSTR)aux);
-		env->ReleaseStringChars(text, aux);
-		return result;
-	};
-
 	SETTEXT(dialog->SetOkButtonLabel, okButtonLabel);
 	SETTEXT(dialog->SetTitle, title);
 	SETTEXT(dialog->SetFileNameLabel, fileNameLabel);
