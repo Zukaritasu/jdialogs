@@ -1,0 +1,9 @@
+/*.dll
+/vstudio/.vs
+/vstudio/Debug
+/vstudio/Release
+/vstudio/jdialogs.sdf
+/vstudio/jdialogs.sln
+/vstudio/jdialogs.vcxproj.filters
+/bin/
+/src/test/MainTest.java

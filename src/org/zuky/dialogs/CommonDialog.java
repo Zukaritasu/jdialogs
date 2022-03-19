@@ -90,8 +90,8 @@ abstract class CommonDialog {
 	/**
 	 * Obtiene el identificador de la ventana la cual será usada
 	 * como ventana padre que recibirá los mensajes o notificaciones
-	 * del cuadro de dialogo. Si el parámetro es <code>null</code> o
-	 * el identificador es inválido el método retornara 0
+	 * del cuadro de dialogo. Si el parámetro es <code>null</code>
+	 * el método retornara 0
 	 * 
 	 * @param window la ventana de donde se obtendrá el identificador 
 	 * @return el identificador de la ventana
@@ -100,14 +100,9 @@ abstract class CommonDialog {
 		if (window != null && window.isDisplayable()) {
 			Object windowPeer = WWindowPeer.getPeerForTarget(window);
 			if (windowPeer != null) {
-				long hwnd = ((WComponentPeer)windowPeer).getHWnd();
-				if (validateHandle(hwnd)) {
-					return hwnd;
-				}
+				return ((WComponentPeer)windowPeer).getHWnd();
 			}
 		}
 		return 0;
 	}
-	
-	
 }

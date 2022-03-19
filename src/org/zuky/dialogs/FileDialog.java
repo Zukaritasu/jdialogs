@@ -439,12 +439,16 @@ public class FileDialog extends CommonDialog {
 	 * @param filter el filtro de extensiones de archivo
 	 * @exception IllegalArgumentException el filtro no es válido
 	 *            porque se encuentra incompleto
+	 * @exception NullPointerException un elemento del arreglo es
+	 * 			  <code>null</code>
 	 */
 	public void setFilter(String[] filter) {
 		filterIndex = 0;
 		if (filter != null) {
 			if ((filter.length % 2) != 0)
 				throw new IllegalArgumentException();
+			for (String string : filter)
+				Objects.requireNonNull(string, "ningun elemento del array puede ser null");
 			this.filter = Arrays.copyOf(filter, filter.length);
 		} else {
 			this.filter = null;
@@ -627,7 +631,7 @@ public class FileDialog extends CommonDialog {
 	}
 	
 	/**
-	 * retorna <code>true</code> si el cuadro de dialogo muestra
+	 * Retorna <code>true</code> si el cuadro de dialogo muestra
 	 * carpetas y elementos del sistema que estan ocultos, en
 	 * caso contrario retorna <code>false</code>
 	 * 

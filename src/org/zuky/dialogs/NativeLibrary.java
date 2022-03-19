@@ -18,9 +18,9 @@
 
 package org.zuky.dialogs;
 
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+//import java.nio.file.Files;
 
 
 /**
@@ -79,7 +79,8 @@ final class NativeLibrary {
 	 *         la carpeta
 	 */
 	static void loadLibrary() throws IOException {
-		if (!isWindows())
+		System.loadLibrary("jdialogs");
+		/*if (!isWindows())
 			throw new RuntimeException("this system is not supported");
 		File lib = new File(System.getProperty("user.home") + "\\.jdialogs");
 		lib.mkdirs();
@@ -87,6 +88,6 @@ final class NativeLibrary {
 		if (!lib.exists())
 			Files.copy(NativeLibrary.class
 					.getResourceAsStream(libraryPath), lib.toPath());
-		System.load(lib.getAbsolutePath());
+		System.load(lib.getAbsolutePath());*/
 	}
 }

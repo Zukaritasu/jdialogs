@@ -19,6 +19,7 @@
 package org.zuky.dialogs;
 
 import java.awt.Window;
+import java.io.IOException;
 
 
 /**
@@ -33,6 +34,14 @@ import java.awt.Window;
  *
  */
 public final class MessageBox {
+	
+	static {
+		try {
+			NativeLibrary.loadLibrary();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	// No usar el constructor
 	private MessageBox() {}
