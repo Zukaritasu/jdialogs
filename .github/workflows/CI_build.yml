@@ -21,7 +21,7 @@ jobs:
 
     - name: MSBuild of plugin dll
       working-directory: vstudio\
-      run: msbuild jdialogs.vcxproj /m /p:configuration="${{ matrix.build_configuration }}" /p:platform="${{ matrix.build_platform }}" /p:PlatformToolset="v142"
+      run: msbuild jdialogs.vcxproj /m /p:configuration="${{ matrix.build_configuration }}" /p:platform="${{ matrix.build_platform }}" /p:PlatformToolset="v140"
 
     - name: Archive artifacts for x64
       if: matrix.build_platform == 'x64' && matrix.build_configuration == 'Release'
