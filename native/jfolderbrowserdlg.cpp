@@ -14,7 +14,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "jfolderbrowserdlg.hpp"
-#include <shellapi.h>
 #include <ShlObj.h>
 
 

@@ -53,7 +53,6 @@ HRESULT ShellItemArrayToStringArray(JNIEnv* env, jobjectArray& array,
 			env->DeleteLocalRef(element);
 		}
 		
-		
 		if (FAILED(hr)) env->DeleteLocalRef(array);
 	}
 	return hr;
@@ -70,6 +69,7 @@ HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint in
 	// an error in the java code 
 	if (filter && (count = env->GetArrayLength(filter)) > 0 && (count % 2) == 0) 
 	{
+		// La mitad de 'count' que especifica la cantidad de filtros
 		unsigned half = count / 2;
 		COMDLG_FILTERSPEC* filters = (COMDLG_FILTERSPEC*)
 									 malloc(sizeof(COMDLG_FILTERSPEC) * half);
@@ -79,6 +79,8 @@ HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint in
 			return E_OUTOFMEMORY;
 		}
 		
+		// Obtiene el elemento por el indice en el arreglo 'filter' y
+		// returna una copia de la cadena
 		auto GetElement = [&](unsigned i) -> wchar_t*
 		{
 			// En el arreglo no pueden existir elementos nulos
@@ -86,8 +88,7 @@ HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint in
 			if (element != NULL)
 			{
 				wchar_t* str_copy = NULL;
-				const jchar* str_chars = 
-					env->GetStringChars((jstring)element, NULL);
+				const jchar* str_chars = env->GetStringChars((jstring)element, NULL);
 				if (str_chars != NULL)
 				{
 					str_copy = _wcsdup((const wchar_t*)str_chars);
@@ -127,11 +128,14 @@ HRESULT SetFilter(IFileDialog* dialog, JNIEnv* env, jobjectArray filter, jint in
 }
 
 #define SETTEXT(func, text) \
-		if (text != nullptr) { \
-			hr = func((LPCWSTR)(aux = env->GetStringChars(text, nullptr))); \
-			env->ReleaseStringChars(text, aux); \
-			if (FAILED(hr)) goto finish; \
-		}
+	if (text != nullptr) { \
+		hr = func((LPCWSTR)(aux = env->GetStringChars(text, nullptr))); \
+		env->ReleaseStringChars(text, aux); \
+		if (FAILED(hr)) goto finish; \
+	}
+		
+#define CHECK_NULL_RELEASE(obj) \
+	if (obj == NULL) { dialog->Release(); return JNI_FALSE; }
 
 JNIFUNCTION(jboolean) 
 Java_org_zuky_dialogs_FileDialog_showDialog(JNIPARAMS, 
@@ -185,8 +189,7 @@ Java_org_zuky_dialogs_FileDialog_showDialog(JNIPARAMS,
 		env->ReleaseStringChars(root, aux);
 		if (itemList != NULL)
 		{
-			hr = SHCreateItemFromIDList(itemList, IID_IShellItem, 
-										reinterpret_cast<void**>(&item));
+			hr = SHCreateItemFromIDList(itemList, IID_IShellItem, reinterpret_cast<void**>(&item));
 			ILFree(itemList);
 			
 			if (FAILED(hr)) goto finish;
@@ -219,11 +222,7 @@ Java_org_zuky_dialogs_FileDialog_showDialog(JNIPARAMS,
 		goto finish;
 
 	clazz = env->GetObjectClass(obj);
-	if (!clazz)
-	{
-		dialog->Release();
-		return JNI_FALSE;
-	}
+	CHECK_NULL_RELEASE(clazz);
 
 	// The selected files are retrieved and assigned in the
 	// global variable 'selectedFiles' 
@@ -250,11 +249,7 @@ Java_org_zuky_dialogs_FileDialog_showDialog(JNIPARAMS,
 		}
 		
 		jfieldID field_selfiles = env->GetFieldID(clazz, "selectedFiles", "[Ljava/lang/String;");
-		if (field_selfiles == NULL)
-		{
-			dialog->Release();
-			return JNI_FALSE;
-		}
+		CHECK_NULL_RELEASE(field_selfiles);
 		
 		env->SetObjectField(obj, field_selfiles, array);
 		env->DeleteLocalRef(array);
@@ -273,20 +268,12 @@ Java_org_zuky_dialogs_FileDialog_showDialog(JNIPARAMS,
 		
 		jstring absolutePath = env->NewString((const jchar*)text, lstrlen(text));
 		CoTaskMemFree(text);
-		if (absolutePath == NULL) 
-		{
-			dialog->Release();
-			return JNI_FALSE;
-		}
+		CHECK_NULL_RELEASE(absolutePath);
 		
 		// The absolute path of the selected file or folder Is
 		// set in the global variable 'absolutePath' 
 		jfieldID field_abpath = env->GetFieldID(clazz, "absolutePath", "Ljava/lang/String;");
-		if (field_abpath == NULL)
-		{
-			dialog->Release();
-			return JNI_FALSE;
-		}
+		CHECK_NULL_RELEASE(field_abpath);
 		env->SetObjectField(obj, field_abpath, absolutePath);
 		env->DeleteLocalRef(absolutePath);
 	}
@@ -298,21 +285,20 @@ Java_org_zuky_dialogs_FileDialog_showDialog(JNIPARAMS,
 	if (SUCCEEDED(hr = dialog->GetFileTypeIndex(&uFilterIndex))) 
 	{
 		jfieldID filter_index = env->GetFieldID(clazz, "filterIndex", "I");
-		if (filter_index == NULL) 
-		{
-			dialog->Release();
-			return JNI_FALSE;
-		}
+		CHECK_NULL_RELEASE(filter_index);
 		env->SetIntField(obj, filter_index, (jint)uFilterIndex);
 	}
 
 finish:
-	if (clazz != NULL) env->DeleteLocalRef(clazz);
+	if (clazz != NULL) 
+		env->DeleteLocalRef(clazz);
 	dialog->Release();
 	// The possible error occurred in this function is shown.
 	// The errors that occur in the jvm are not shown, the jvm itself
 	// is responsible for showing them, including the out of memory
-	if (hr != -2147023673) // user cancel
+
+	// The user closed the window by cancelling the operation
+	if (hr != ERROR_CANCELLED) 
 		ShowError(env, hr);
 
 	return SUCCEEDED(hr);

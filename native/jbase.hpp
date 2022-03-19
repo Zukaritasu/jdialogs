@@ -16,7 +16,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <cstdio>
 
 #include "jni.h"
 
@@ -44,8 +43,8 @@
 // itself. Exceptions or errors can be displayed by console
 // or from a call to the JNIEnv::Throw or JNIEnv::ThrowNew method. 
 void ShowError(JNIEnv* env, unsigned long code = 0);
-
-void ShowOutOfMemory(JNIEnv* env, const char* comment = nullptr);
+void ShowOutOfMemory(JNIEnv* env, const char* comment = NULL);
+void ThrowNew(JNIEnv* env, const char* class_name, const char* comment = NULL);
 
 JNIFUNCTION(jstring)
 Java_org_zuky_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code);

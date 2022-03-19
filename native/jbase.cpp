@@ -15,6 +15,8 @@
 
 #include "jbase.hpp"
 
+#include <cstdio> // fprintf and sprintf
+
 // Use LocalFree(LPVOID)
 static char* GetFormatMessage(DWORD code)
 {
@@ -63,7 +65,7 @@ void ShowError(JNIEnv* env, DWORD code)
 		else 
 		{
 			char* message = GetFormatMessage(error_code);
-			if (message != NULL)
+			if (message == NULL)
 				fprintf(stderr, "Unknown error: 0x%X\n", error_code);
 			else
 			{
@@ -76,11 +78,16 @@ void ShowError(JNIEnv* env, DWORD code)
 
 void ShowOutOfMemory(JNIEnv* env, const char* comment)
 {
-	jclass out_of_memory = env->FindClass("java/lang/OutOfMemoryError");
-	if (out_of_memory != NULL)
+	ThrowNew(env, "java/lang/OutOfMemoryError", comment);
+}
+
+void ThrowNew(JNIEnv* env, const char* class_name, const char* comment)
+{
+	jclass exception = env->FindClass(class_name);
+	if (exception != NULL)
 	{
-		env->ThrowNew(out_of_memory, comment);
-		env->DeleteLocalRef(out_of_memory);
+		env->ThrowNew(exception, comment);
+		env->DeleteLocalRef(exception);
 	}
 }
 
@@ -99,8 +106,8 @@ Java_org_zuky_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code)
 	}
 	else
 	{
-		char unknown_code[48];
-		sprintf(unknown_code, "Unknown error: 0x%X", (int)code);
-		return env->NewStringUTF(unknown_code);
+		char unknown_error[48];
+		sprintf(unknown_error, "Unknown error: 0x%X", (int)code);
+		return env->NewStringUTF(unknown_error);
 	}
 }

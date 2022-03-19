@@ -1,20 +1,23 @@
-#  Windows Common Dialogs
->Se trata de una librería utilitaria que tiene como función principal poder usar los cuadros de dialogo de Windows en **Java** como puede ser el selector de colores, el selector de fuentes o el explorador de archivos y carpetas
+# Windows Common Dialogs
 
-## Tipos de Cuadro de Diálogos Soportados
-<li>ColorDialog
-<li>FolderBrowserDialog
-<li>FontDialog
-<li>FileDialog
-<li>MessageBox
-<li>Proximamente estara disponible PrintDialog "Para imprimir documentos"
+La librería jdialogs.jar contiene varias clases que muestran ventanas o cuadros de dialogo como por ejemplo el selector de archivos,  fuentes, colores, etc...
+
+Todas las ventanas de dialogo son nativas del sistema Windows por lo cual la librería jdialogs.jar viene acompañada con una DLL para llamar las funciones nativas necesarias utilizando JNI.
+
+Esta librería no se hizo con la intención de poder ser multi-plataforma con otros sistemas operativos pero si tienes la intención de contribuir a este proyecto para lograr que sea multi-plataforma o solucionar algun error, entonces bienvenid@!!!
+
+## Las Ventanas de Diálogo Disponibles
+* ColorDialog
+* FolderBrowserDialog
+* FontDialog
+* FileDialog
+* MessageBox
 
 ## Requisitos 
-<li> <b>Windows Vista</b> o porterior de <b>x86</b> o <b>x64</b>
-<li> <b>Java</b> versión 1.8 y versiones posteriores
+* **Windows Vista** o porterior de 32 o 64 bits
+* **Java** versión 8 y versiones posteriores
 
-## Versiones
+## Ejemplos
 
-<li> Version liberada 1.7<p>
+* **ColorDialog**
 
-[jdialogs.jar](https://github.com/Zukaritasu/jdialogs/raw/main/jdialogs.jar)

@@ -16,9 +16,38 @@
 #include "jfontdlg.hpp"
 
 #include <strsafe.h>
+#include <cmath>
 #ifdef _DEBUG
 #include <cstdio>	
 #endif // _DEBUG
+
+static BOOL InitializeLogFont(JNIEnv* env, LOGFONT& logf, HDC hdc,
+							  jstring name, jint style, jint size)
+{
+	const jchar* font_name = env->GetStringChars(name, NULL);
+	if (font_name != NULL)
+	{
+		// Copy font name, max 32 characters including the null character
+		StringCbCopy(logf.lfFaceName, sizeof(logf.lfFaceName), 
+					(const wchar_t*)font_name);
+		env->ReleaseStringChars(name, font_name);
+		
+		logf.lfHeight         = -MulDiv(size, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+		
+		logf.lfWeight         = (style & 1) ? FW_BOLD : FW_NORMAL;
+		logf.lfItalic         = (style & 2) ? 0xff : 0x0;
+		
+		// Set default values
+		
+		logf.lfCharSet        = DEFAULT_CHARSET;
+		logf.lfOutPrecision   = OUT_TT_PRECIS;
+		logf.lfQuality        = PROOF_QUALITY;
+		logf.lfPitchAndFamily = FF_ROMAN;
+		
+		return TRUE;
+	}
+	return FALSE;
+}
 
 JNIFUNCTION(jboolean)
 Java_org_zuky_dialogs_FontDialog_showDialog(JNIPARAMS, 
@@ -29,48 +58,39 @@ Java_org_zuky_dialogs_FontDialog_showDialog(JNIPARAMS,
 											jint color, 
 											jlong hwndParent)
 {
-	LOGFONT logFont{};
+	LOGFONT logf{};
 
 	CHOOSEFONT choose{};
 	choose.lStructSize = sizeof(CHOOSEFONT);
 	choose.Flags       = flags;
-	choose.lpLogFont   = &logFont;
+	choose.lpLogFont   = &logf;
 	choose.hwndOwner   = (HWND)hwndParent;
+	
+	static HDC hdc;
+	if (hdc == NULL)
+	{
+		hdc = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
+		if (hdc == NULL)
+		{
+			ShowError(env);
+			return JNI_FALSE;
+		}
+	}
 
 	// Sample text color is set 
 	if (flags & CF_EFFECTS)
 		choose.rgbColors = RGBATORGB(color);
-	if ((flags & CF_INITTOLOGFONTSTRUCT) && name != NULL)
+	if ((flags & CF_INITTOLOGFONTSTRUCT) && name != NULL && 
+		!InitializeLogFont(env, logf, hdc, name, style, size))
 	{
-		const jchar* fontnm = env->GetStringChars(name, NULL);
-		CHECK_NULL(fontnm);
-		
-		// The field 'lfFaceName' has a limit of 32 characters including
-		// the null character so the StringCbCopy function copies as many
-		// characters as needed although it would be wrong to specify a
-		// font name with a length that exceeds the limit 
-		StringCbCopy(logFont.lfFaceName, sizeof(logFont.lfFaceName), 
-					(const wchar_t*)fontnm);
-		env->ReleaseStringChars(name, fontnm);
-
-		logFont.lfHeight         = size * (-1);
-		logFont.lfWeight         = ((style & 1) != 0) ? FW_BOLD : FW_NORMAL;
-		logFont.lfItalic         = ((style & 2) != 0) ? 0xff : 0x0;
-		logFont.lfCharSet        = DEFAULT_CHARSET;
-		logFont.lfOutPrecision   = OUT_TT_PRECIS;
-		logFont.lfQuality        = PROOF_QUALITY;
-		logFont.lfPitchAndFamily = FF_ROMAN;
+		return JNI_FALSE; // cause by GetStringChars
 	}
 
 	if (ChooseFont(&choose))
 	{
-#ifdef _DEBUG
-		fprintf(stdout, "Height: %d\n", logFont.lfHeight);
-		fprintf(stdout, "Width: %d\n", logFont.lfWidth);
-#endif // _DEBUG
 		// The java.awt.Font class only supports the BOLD and ITALIC styles
-		style = ((logFont.lfWeight == FW_BOLD) ? 1 : 0) | 
-		        ((logFont.lfItalic == 0xff)    ? 2 : 0);
+		style = ((logf.lfWeight == FW_BOLD) ? 1 : 0) | 
+		        ((logf.lfItalic == 0xff   ) ? 2 : 0); // 0 or 255
 
 		jclass classFont = env->FindClass("java/awt/Font");
 		CHECK_NULL(classFont);
@@ -78,13 +98,15 @@ Java_org_zuky_dialogs_FontDialog_showDialog(JNIPARAMS,
 		jmethodID method = env->GetMethodID(classFont, "<init>", "(Ljava/lang/String;II)V");
 		CHECK_NULL(method);
 		
-		jstring faceName = env->NewString((const jchar*)logFont.lfFaceName, 
-								lstrlen(logFont.lfFaceName));
+		jstring faceName = env->NewString((const jchar*)logf.lfFaceName, 
+								lstrlen(logf.lfFaceName));
 		CHECK_NULL(faceName);
+		
+		float result = (logf.lfHeight * 72) / (GetDeviceCaps(hdc, LOGPIXELSY) * 1.0F);
+		size = lroundf(result);
 		// The Font class object is created with the name of the font,
 		// the style and the size 
-		jobject fontObj  = env->NewObject(classFont, method, faceName, 
-								style, logFont.lfHeight * (-1));
+		jobject fontObj  = env->NewObject(classFont, method, faceName, style, size);
 		CHECK_NULL(fontObj);
 
 		jclass clazz     = env->GetObjectClass(obj);
@@ -102,15 +124,17 @@ Java_org_zuky_dialogs_FontDialog_showDialog(JNIPARAMS,
 			CHECK_NULL(fcolor);
 			env->SetIntField(obj, fcolor, RGBTORGBA(choose.rgbColors));
 		}
-
+		
+		// All delete local references
 		env->DeleteLocalRef(clazz);
 		env->DeleteLocalRef(classFont);
 		env->DeleteLocalRef(fontObj);
 		env->DeleteLocalRef(faceName);
-
+		
 		return JNI_TRUE;
 	}
-
+	
 	ShowError(env);
+	
 	return JNI_FALSE;
 }

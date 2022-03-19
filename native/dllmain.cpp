@@ -27,9 +27,9 @@ BOOL APIENTRY DllMain(HMODULE, DWORD reason, LPVOID)
 		case DLL_PROCESS_ATTACH: 
 		{
 			// The Ole library is initialized to use the CoCreateInstance function. 
-			if (FAILED(hr = OleInitialize(nullptr))) 
+			if (FAILED(hr = OleInitialize(NULL))) 
 			{
-				ShowError(nullptr, hr);
+				ShowError(NULL, hr);
 				return FALSE;
 			}
 			break;

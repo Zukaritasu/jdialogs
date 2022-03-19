@@ -39,21 +39,21 @@ Java_org_zuky_dialogs_ColorDialog_showDialog(JNIPARAMS, jint flags, jlong hwndPa
 		return JNI_FALSE;
 	}
 	
-	jint* custColors = env->GetIntArrayElements(custom, NULL);
-	CHECK_NULL(custColors);
+	jint* custom_colors = env->GetIntArrayElements(custom, NULL);
+	CHECK_NULL(custom_colors);
 	
-	COLORREF customColors[NUM_CUSTOM_COLORS]{};
+	COLORREF buf_colors[NUM_CUSTOM_COLORS];
 	// The RGBATORGB macro removes the alpha channel which is not supported 
 	for (int i = 0; i < NUM_CUSTOM_COLORS; i++)
 	{
-		customColors[i] = RGBATORGB(custColors[i]);
+		buf_colors[i] = RGBATORGB(custom_colors[i]);
 	}
 
 	CHOOSECOLOR cChooser{};
 	cChooser.lStructSize  = sizeof(CHOOSECOLOR);
 	cChooser.Flags        = flags;
 	cChooser.hwndOwner    = (HWND)hwndParent;
-	cChooser.lpCustColors = customColors;
+	cChooser.lpCustColors = buf_colors;
 
 	// In case an error has occurred in the ChooseColor function,
 	// the error code is evaluated at the end of this function 
@@ -63,17 +63,17 @@ Java_org_zuky_dialogs_ColorDialog_showDialog(JNIPARAMS, jint flags, jlong hwndPa
 		// The RGBTORGBA macro adds the alpha channel to 255 
 		for (int i = 0; i < NUM_CUSTOM_COLORS; i++)
 		{
-			custColors[i] = RGBTORGBA(customColors[i]);
+			custom_colors[i] = RGBTORGBA(buf_colors[i]);
 		}
 
 		jfieldID fcolor = env->GetFieldID(clazz, "color", "I");
 		CHECK_NULL(fcolor);
 		// The last color selected 
 		env->SetIntField(obj, fcolor, RGBTORGBA(cChooser.rgbResult));
-		env->SetIntArrayRegion(custom, 0, NUM_CUSTOM_COLORS, custColors);
+		env->SetIntArrayRegion(custom, 0, NUM_CUSTOM_COLORS, custom_colors);
 	}
 	
-	env->ReleaseIntArrayElements(custom, custColors, 0);
+	env->ReleaseIntArrayElements(custom, custom_colors, 0);
 	env->DeleteLocalRef(custom);
 	env->DeleteLocalRef(clazz);
 	

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021 Zukaritasu
+ * Copyright (C) 2021-2022 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
 package org.zuky.dialogs;
@@ -61,6 +60,18 @@ abstract class CommonDialog {
 	 *         si el usuario cancelo la operación o ocurrió un error
 	 */
 	public abstract boolean show(Window parent);
+	
+	/**
+	 * Muestra el cuadro de dialogo sin requerer de la ventana padre
+	 * como en el metodo {@link #show(Window)} pero en este caso se
+	 * omite lo que se explica en la documentacion de ese metodo
+	 * 
+	 * @return {@code true} si la operación tuvo éxito; {@code false}
+	 *         si el usuario cancelo la operación o ocurrió un error
+	 */
+	public boolean show() {
+		return show(null);
+	}
 
 	/**
 	 * Retorna <code>true</code> si el identificador de la ventana es
@@ -69,6 +80,7 @@ abstract class CommonDialog {
 	 * @param hwnd identificador de la ventana
 	 * @return resultado
 	 */
+	@Deprecated
 	private static native boolean validateHandle(long hwnd);
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021 Zukaritasu
+ * Copyright (C) 2021-2022 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
 package org.zuky.dialogs;
@@ -26,6 +25,7 @@ package org.zuky.dialogs;
  */
 public class WindowsException extends RuntimeException {
 	
+	private static final long serialVersionUID = 2644189949941497397L;
 	private int code;
 	private String message;
 	

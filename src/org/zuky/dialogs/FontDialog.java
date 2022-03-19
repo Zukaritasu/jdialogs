@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021 Zukaritasu
+ * Copyright (C) 2021-2022 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
 package org.zuky.dialogs;
@@ -61,6 +60,7 @@ public class FontDialog extends CommonDialog {
 	/**
 	 * El color que se uso para colorear el texto de muestra
 	 */
+	@NativeValue
 	private int color;
 	
 	/**
