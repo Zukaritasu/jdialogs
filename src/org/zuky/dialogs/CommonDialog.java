@@ -79,6 +79,9 @@ abstract class CommonDialog {
 	 * 
 	 * @param hwnd identificador de la ventana
 	 * @return resultado
+	 * @deprecated Ya no es necesario verificar si el identificar es
+	 * valido, solo se usa sin importar su estado. Este metodo ya no
+	 * cuenta con un vinculo nativo !! No llamar este metodo !!
 	 */
 	@Deprecated
 	private static native boolean validateHandle(long hwnd);

@@ -4,7 +4,7 @@ La librería jdialogs.jar contiene varias clases que muestran ventanas o cuadros
 
 Todas las ventanas de dialogo son nativas del sistema Windows por lo cual la librería jdialogs.jar viene acompañada con una DLL para llamar las funciones nativas necesarias utilizando JNI.
 
-Esta librería no se hizo con la intención de poder ser multi-plataforma con otros sistemas operativos pero si tienes la intención de contribuir a este proyecto para lograr que sea multi-plataforma o solucionar algun error, entonces bienvenid@!!!
+Esta librería no se hizo con la intención de poder ser multi-plataforma con otros sistemas operativos pero si tienes la intención de contribuir a este proyecto para lograr que sea multi-plataforma o solucionar algun error entonces bienvenid@!!!
 
 ## Las Ventanas de Diálogo Disponibles
 * ColorDialog
@@ -14,10 +14,11 @@ Esta librería no se hizo con la intención de poder ser multi-plataforma con ot
 * MessageBox
 
 ## Requisitos 
+
 * **Windows Vista** o porterior de 32 o 64 bits
 * **Java** versión 8 y versiones posteriores
 
-## Ejemplos
+## Mas informacion
 
-* **ColorDialog**
-
+* [Ejemplos](./examples)
+* [Windows Common Dialogs Documentation](./doc/index.html)
