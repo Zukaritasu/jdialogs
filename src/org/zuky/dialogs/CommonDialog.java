@@ -18,7 +18,6 @@
 package org.zuky.dialogs;
 
 import java.awt.Window;
-import java.io.IOException;
 
 import sun.awt.windows.WComponentPeer;
 import sun.awt.windows.WWindowPeer;
@@ -40,11 +39,7 @@ abstract class CommonDialog {
 
 	// Se carga la libreria
 	static {
-		try {
-			NativeLibrary.loadLibrary();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		NativeLibrary.loadLibrary();
 	}
 
 	/**
