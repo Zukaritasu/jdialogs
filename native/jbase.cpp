@@ -96,7 +96,7 @@ Java_org_zuky_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code)
 {
 	char* message = GetFormatMessage(code);
 #ifdef _DEBUG
-		fprintf(stdout, "Code: %d\n", code);
+	fprintf(stdout, "Code: %d\n", code);
 #endif // _DEBUG
 	if (message != NULL)
 	{

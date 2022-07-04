@@ -1,5 +1,7 @@
 # Windows Common Dialogs
 
+![GitHub](https://img.shields.io/github/license/Zukaritasu/jdialogs) ![GitHub all releases](https://img.shields.io/github/downloads/Zukaritasu/jdialogs/total) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Zukaritasu/jdialogs)
+
 La librería jdialogs.jar contiene varias clases que muestran ventanas o cuadros de dialogo como por ejemplo el selector de archivos,  fuentes, colores, etc...
 
 Todas las ventanas de dialogo son nativas del sistema Windows por lo cual la librería jdialogs.jar viene acompañada con una DLL para llamar las funciones nativas necesarias utilizando JNI.
