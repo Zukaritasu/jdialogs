@@ -2,25 +2,25 @@
 
 ![GitHub](https://img.shields.io/github/license/Zukaritasu/jdialogs) ![GitHub all releases](https://img.shields.io/github/downloads/Zukaritasu/jdialogs/total) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Zukaritasu/jdialogs)
 
-La librería jdialogs.jar contiene varias clases que muestran ventanas o cuadros de dialogo como por ejemplo el selector de archivos,  fuentes, colores, etc...
+The jdialogs.jar library contains several classes that display dialog windows such as file chooser, fonts, colors, etc...
 
-Todas las ventanas de dialogo son nativas del sistema Windows por lo cual la librería jdialogs.jar viene acompañada con una DLL para llamar las funciones nativas necesarias utilizando JNI.
+All dialog windows are native to the Windows system, so the jdialogs.jar library comes with a DLL to call the necessary native functions using JNI.
 
-Esta librería no se hizo con la intención de poder ser multi-plataforma con otros sistemas operativos pero si tienes la intención de contribuir a este proyecto para lograr que sea multi-plataforma o solucionar algun error entonces bienvenid@!!!
+This library was not made with the intention of being cross-platform with other operating systems but if you intend to contribute to this project to make it cross-platform or fix any bugs then welcome!!!
 
-## Las Ventanas de Diálogo Disponibles
+## Available Windows Common Dialogs
 * ColorDialog
 * FolderBrowserDialog
 * FontDialog
 * FileDialog
 * MessageBox
 
-## Requisitos 
+## Requirements 
 
-* **Windows Vista** o porterior de 32 o 64 bits
-* **Java** versión 8 y versiones posteriores
+* **Windows Vista** or later 32 or 64 bit
+* **Java** version 8 or later versions
 
-## Mas informacion
+## More information
 
-* [Ejemplos](./examples)
-* [Windows Common Dialogs Documentation](./doc/index.html)
+* [Examples](./examples)
+* [Windows Common Dialogs Documentation](./doc)
