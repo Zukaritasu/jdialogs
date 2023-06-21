@@ -12,4 +12,5 @@
 /vstudio/jdialogs.vcxproj.filters
 /src/test/MainTest.java
 /*.zip
+/target
 /out
