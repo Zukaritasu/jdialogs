@@ -16,8 +16,6 @@
  */
 
 /**
- * Este paquete contiene las clases que representan los cuadros
- * de diálogos nativos de Windows los cuales son:
  * 
  * {@link org.zuky.dialogs.ColorDialog},
  * {@link org.zuky.dialogs.FileDialog},

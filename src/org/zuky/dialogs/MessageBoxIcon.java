@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,25 @@
 package org.zuky.dialogs;
 
 /**
- * Los iconos que puede mostrar {@link MessageBox}
- * 
+ * The icons available in the {@link MessageBox}
+ * <p>
+ * The documentation for this class listed is based on Microsoft official website
+ *
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messagebox#remarks">
+ * 	MessageBox - Remarks
+ * </a>
  * @author Zukaritasu
  *
  */
 public enum MessageBoxIcon {
 
-	/** Un mensaje de advertencia */
-	WARNING      (0x00000030),
-	/** Un mensaje de error */
+	/** Displays an error message */
 	ERROR        (0x00000010),
-	/** Un mensaje para preguntar */
+	/** Displays a message generating a question */
 	QUESTION     (0x00000020),
-	/** Un mensaje informativo */
+	/** Displays a warning message to the user */
+	WARNING      (0x00000030),
+	/** Displays an information message */
 	INFORMATION  (0x00000040);
 	
 	private int icon;
@@ -39,13 +44,13 @@ public enum MessageBoxIcon {
 	MessageBoxIcon(int icon) {
 		this.icon = icon;
 	}
-	
+
 	/**
-	 * Retorna un ID que identifica el icono de {@link MessageBox}
-	 * 
-	 * @return ID del icono
+	 * Returns the icon ID
+	 *
+	 * @return id
 	 */
-	public int getIDIcon() {
+	public int getID() {
 		return icon;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,70 +22,52 @@ import java.awt.Window;
 import java.util.Objects;
 
 /**
- * Esta clase representa el cuadro de dialogo selector de
- * colores de Windows en el cual se puede seleccionar un color de
- * los 48 colores predeterminados o elegir un color personalizado,
- * para ello puede llamar el método {@link #setFullOpen(boolean)}.
+ * This class Represents the WinAPI custom color selection dialog box.
  * <p>
- * El cuadro de dialogo cuenta con 16 casillas en donde se podrán
- * guardar los colores personalizados por el usuario, para obtener
- * esos colores puede llamar el método {@link #getColors()} y para
- * definir previamente los colores personalizados 
- * {@link #setColors(int[])} o desde el constructor
- * {@link #ColorDialog(int[])}
+ * The dialog box does not support the alpha channel and in that
+ * case the alpha channel or transparency is ignored.
  * 
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/dlgbox/color-dialog-box">
+ * 	Color Dialog Box - Win32
+ * </a>
  * @author Zukaritasu
  *
  */
 public class ColorDialog extends CommonDialog {
 
 	/**
-	 * Indica la cantidad máxima de casillas de colores
-	 * personalizados que tiene el cuadro de dialogo
-	 */
-	public static final int MAX_CUSTOM_COLORS = 16;
-	
-	/**
-	 * Los colores personalizados
+	 * Maximum number of colors you can customize
 	 * 
 	 * @see #setColors(int[])
 	 * @see #getColors()
 	 */
-	@NativeValue
+	public static final int MAX_CUSTOM_COLORS = 16;
+
+	@NativeModified
 	private final int[] custom = new int[MAX_CUSTOM_COLORS];
-	
-	/**
-	 * El color seleccionado
-	 * 
-	 * @see #getColor()
-	 */
-	@NativeValue
+
+	@NativeModified
 	private int color;
-	
-	/**
-	 * Las banderas del cuadro de dialogo
-	 */
+
 	private int flags;
 
 	/**
-	 * Crea una nueva instancia de esta clase {@link ColorDialog}
-	 * {@link ColorDialog}
+	 * Create an instance of this class
 	 * 
 	 * @see #ColorDialog(int[])
 	 */
 	public ColorDialog() {
 	}
-	
+
 	/**
-	 * Crea un nuevo cuadro de dialogo selector de colores
-	 * {@link ColorDialog}. El constructor recibe como parámetro
-	 * un array de enteros con los colores RGB que se mostraran
-	 * en las casillas de colores personalizados
+	 * Creates an instance of this class where it receives an array of 
+	 * integers that defines the color of each ColorDialog box.
 	 * 
-	 * @param colors el arreglo de colores
-	 * @exception IllegalArgumentException el array tiene una
-	 *            longitud que supera {@link #MAX_CUSTOM_COLORS}
-	 * @exception NullPointerException el parametro es {@code null}
+	 * @param colors Array of integers defining the color of each cell
+	 * @exception NullPointerException The array is <code>null</code>
+	 * @exception IllegalArgumentException The array size exceeds the
+	 * 		maximum amount defined by {@link #MAX_CUSTOM_COLORS}
+	 * @see #setColors(int[])
 	 */
 	public ColorDialog(int[] colors) {
 		setColors(colors);
@@ -93,54 +75,44 @@ public class ColorDialog extends CommonDialog {
 
 	@Override
 	public synchronized boolean show(Window parent) {
-		return showDialog(flags, getHandleWindow(parent));
+		return showDialog(flags, getHWnd(parent));
 	}
-	
+
 	/**
-	 * Habilita el cuadro de dialogo para que se muestre con
-	 * funciones extendidas donde se podrá seleccionar un color
-	 * personalizado. {@code true} para habilitar las funciones
-	 * extendidas y {@code false} para los contrario.
-	 * <P>
-	 * Por defecto no se muestran las funciones extendidas del
-	 * cuadro de dialogo 
+	 * When opening the dialog box you can indicate whether it should
+	 * be displayed with the extension to edit the RGB colors.
 	 * 
-	 * @see #isFullOpen()
-	 * @param fullOpen usar funciones extendidas
+	 * @param fullOpen Show edit extension
 	 */
 	public void setFullOpen(boolean fullOpen) {
-		flags = flag(flags, 0x00000002, fullOpen);
+		flags = maskBit(flags, 0x00000002, fullOpen);
 	}
-	
+
 	/**
-	 * Retorna {@code true} si el cuadro de dialogo se muestra con
-	 * funciones extendidas para definir un color personalizado,
-	 * retorna {@code false} en caso contrario 
+	 * Returns true if {@link ColorDialog} is displayed with extension
 	 * 
-	 * @see #setFullOpen(boolean)
-	 * @return se muestra con funciones extendidas 
+	 * @return Full open
 	 */
 	public boolean isFullOpen() {
 		return (flags & 0x00000002) != 0;
 	}
-	
+
 	/**
-	 * Retorna el ultimo color que fue seleccionado en el cuadro
-	 * de dialogo 
+	 * Returns the last color that was selected. If you have not
+	 * selected a color the result will be a black color.
 	 * 
-	 * @return el color
+	 * @return Color
 	 */
 	public Color getColor() {
 		return new Color(color);
 	}
-	
+
 	/**
-	 * Retorna un array de enteros con los colores <b>RGB</b> que
-	 * fueron seleccionados en el cuadro de dialogo como parte de
-	 * los colores personalizados 
+	 * Returns an array with the colors of the boxes including
+	 * custom and selected colors.
 	 * 
+	 * @return Array of colors
 	 * @see #setColors(int[])
-	 * @return el array con los colores <b>RGB</b>
 	 */
 	public int[] getColors() {
 		int[] colors = new int[MAX_CUSTOM_COLORS];
@@ -148,28 +120,24 @@ public class ColorDialog extends CommonDialog {
 		return colors;
 	}
 	
-	private native boolean showDialog(int flags, long hwndParent);
-	
+	private native boolean showDialog(int flags, long hWndParent);
+
 	/**
-	 * El método recibe como parámetro un array que contiene
-	 * los colores <b>RGB</b> que se mostraran en las casillas de
-	 * colores personalizados. Recuerda que el array no puede
-	 * tener una longitud superior de la señalada por la constante
-	 * {@link #MAX_CUSTOM_COLORS}
-	 * <P>
-	 * El cuadro de dialogo no soporta el canal alpha por ende los
-	 * colores que contienen transparencia son ignorados y solo
-	 * se muestra el color <b>RGB</b> sin transparencia
+	 * Define the colors to be displayed in each box of the dialog box
+	 * <p>
+	 * The alpha channel or transparency is ignored because Windows
+	 * {@link ColorDialog} is not supported.
 	 * 
+	 * @param colors Array of colors
+	 * @exception NullPointerException The array is <code>null</code>
+	 * @exception IllegalArgumentException The array size exceeds the
+	 * 		maximum amount defined by {@link #MAX_CUSTOM_COLORS}
+	 * @see #MAX_CUSTOM_COLORS
 	 * @see #getColors()
-	 * @param colors el arreglo de colores <b>RGB</b>
-	 * @exception IllegalArgumentException el array tiene una
-	 *            longitud que supera {@link #MAX_CUSTOM_COLORS}
-	 * @exception NullPointerException el parametro es {@code null}
 	 */
 	public void setColors(int[] colors) {
-		if (Objects.requireNonNull(colors, "param is null").length > MAX_CUSTOM_COLORS)
-			throw new IllegalArgumentException("length > 16");
+		if (Objects.requireNonNull(colors, "colors is null").length > MAX_CUSTOM_COLORS)
+			throw new IllegalArgumentException("colors.length > 16");
 		System.arraycopy(colors, 0, custom, 0, colors.length);
 	}
 }

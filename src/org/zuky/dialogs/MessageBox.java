@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,15 @@ package org.zuky.dialogs;
 
 import java.awt.Window;
 
-
 /**
- * La clase cuanta con una sobrecarga de método para mostrar un mensaje
- * al usuario. Dependiendo de lo que se requiera se puede usar uno de los
- * métodos declarados en esta clase
+ * Displays a message to the user
  * 
+ * @see DialogResult
  * @see MessageBoxButton
  * @see MessageBoxIcon
- * 
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messagebox">
+ * 	MessageBox - Win32
+ * 	</a>
  * @author Zukaritasu
  *
  */
@@ -37,79 +37,71 @@ public final class MessageBox {
 		NativeLibrary.loadLibrary();
 	}
 	
-	// No usar el constructor
 	private MessageBox() {}
 
 	/**
-	 * Muestra un mensaje en pantalla. Este cuadro de dialogo no tiene
-	 * título y solo se usa el botón <code>OK</code>. El tipo de cuadro
-	 * de dialogo usado por defecto es {@link MessageBoxIcon#INFORMATION}
-	 * 
-	 * @param parent  ventana padre
-	 * @param message mensaje que se mostrara
-	 * @return resultado
+     * Displays a message to the user and returns a DialogResult. By default
+     * the dialog box is an informational dialog {@link MessageBoxIcon#INFORMATION}
+	 *
+	 * @param parent  Parent window owner of the dialog box
+	 * @param message The message that will be displayed in the dialog box
+	 * @return        result
 	 */
 	public static DialogResult show(Window parent, String message) {
 		return show(parent, message, "");
 	}
-	
-	/**
-	 * Muestra un mensaje en pantalla. Este cuadro de dialogo solo muestra
-	 * el botón <code>OK</code>. El tipo de cuadro de  dialogo usado por
-	 * defecto es {@link MessageBoxIcon#INFORMATION}
-	 * 
-	 * @param parent  ventana padre
-	 * @param message mensaje que se mostrara
-	 * @param caption titulo del cuadro de dialogo
-	 * @return resultado
-	 */
+
+    /**
+     * Displays a message to the user and returns a DialogResult. By default
+     * the dialog box is an informational dialog {@link MessageBoxIcon#INFORMATION}
+     *
+     * @param parent  Parent window owner of the dialog box
+     * @param message The message that will be displayed in the dialog box
+     * @param caption Dialog box title
+     * @return        result
+     */
 	public static DialogResult show(Window parent, String message,
 			String caption) {
 		return show(parent, message, caption, MessageBoxButton.OK);
 	}
-	
-	/**
-	 * Muestra un mensaje en pantalla. Este cuadro de dialogo muestra el
-	 * boton especificado por el cuarto parametro utilizando un enumerado
-	 * declarado en <code>MessageBoxButton</code>. El tipo de cuadro de
-	 * dialogo usado por defecto es {@link MessageBoxIcon#INFORMATION}
-	 * 
-	 * @param parent  ventana padre
-	 * @param message mensaje que se mostrara
-	 * @param caption titulo del cuadro de dialogo
-	 * @param button  botones de opcion
-	 * @return resultado
-	 */
+
+    /**
+     * Displays a message to the user and returns a DialogResult. By default
+     * the dialog box is an informational dialog {@link MessageBoxIcon#INFORMATION}
+     *
+     * @param parent  Parent window owner of the dialog box
+     * @param message The message that will be displayed in the dialog box
+     * @param caption Dialog box title
+     * @param button  Indicates which button group should be displayed in
+     *                the dialog box. Use {@link MessageBoxButton}
+     * @return        result
+     */
 	public static DialogResult show(Window parent, String message, 
 			String caption, MessageBoxButton button) {
 		return show(parent, message, caption, button, 
 			MessageBoxIcon.INFORMATION);
 	}
-	
-	/**
-	 * Muestra un mensaje en pantalla. Este cuadro de dialogo muestra el
-	 * boton especificado por el cuarto parametro utilizando un enumerado
-	 * declarado en <code>MessageBoxButton</code> y el tipo de cuadro de
-	 * dialogo señalado por uno de los enumerados declarados en
-	 * <code>MessageBoxIcon</code>
-	 * 
-	 * @param parent  ventana padre
-	 * @param message mensaje que se mostrara
-	 * @param caption titulo del cuadro de dialogo
-	 * @param button  botones de opcion
-	 * @param icon    tipo de cuadro de dialogo
-	 * @return resultado
-	 */
+
+    /**
+     * Displays a message to the user and returns a DialogResult. By default
+     * the dialog box is an informational dialog {@link MessageBoxIcon#INFORMATION}
+     *
+     * @param parent  Parent window owner of the dialog box
+     * @param message The message that will be displayed in the dialog box
+     * @param caption Dialog box title
+     * @param button  Indicates which button group should be displayed in
+     *                the dialog box. Use {@link MessageBoxButton}
+     * @param icon    Specifies which icon the dialog box should display.
+     *                Depending on the icon the window will produce a sound when displayed.
+     * @return        result
+     */
 	public static DialogResult show(Window parent, String message, 
 			String caption, MessageBoxButton button, MessageBoxIcon icon) {
 		return DialogResult.getDialogResult(
-				showMessage(CommonDialog.getHandleWindow(parent), message, 
-				caption, button.getIDButton() | icon.getIDIcon()));
+				showMessage(CommonDialog.getHWnd(parent), message, 
+				caption, button.getID() | icon.getID()));
 	}
 	
-	
-	
-	
-	private static native int showMessage(long hwndParent, String message, 
+	private static native int showMessage(long hWndParent, String message,
 			String caption, int type);
 }

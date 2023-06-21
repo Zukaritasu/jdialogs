@@ -1,3 +1,4 @@
+
 // Copyright (C) 2021-2022 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
@@ -95,9 +96,6 @@ JNIFUNCTION(jstring)
 Java_org_zuky_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code)
 {
 	char* message = GetFormatMessage(code);
-#ifdef _DEBUG
-	fprintf(stdout, "Code: %d\n", code);
-#endif // _DEBUG
 	if (message != NULL)
 	{
 		jstring format_message = env->NewStringUTF(message);
@@ -110,4 +108,34 @@ Java_org_zuky_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code)
 		sprintf(unknown_error, "Unknown error: 0x%X", (int)code);
 		return env->NewStringUTF(unknown_error);
 	}
+}
+
+JNIFUNCTION(jlong)
+Java_org_zuky_dialogs_CommonDialog_getHWnd(JNIPARAMS, jobject window)
+{
+	jclass clazz = env->FindClass("sun/awt/windows/WToolkit");
+	CHECK_NULL(clazz);
+
+	// return WComponentPeer object
+	jmethodID targetToPeer = env->GetStaticMethodID(clazz, "targetToPeer", "(Ljava/lang/Object;)Ljava/lang/Object;");
+	CHECK_NULL(targetToPeer);
+
+	jobject peer = env->CallStaticObjectMethod(clazz, targetToPeer, window); 
+	if (peer != nullptr)
+	{
+		jclass class_peer = env->FindClass("sun/awt/windows/WComponentPeer");
+		CHECK_NULL(class_peer);
+
+		jmethodID getHWnd = env->GetMethodID(class_peer, "getHWnd", "()J");
+		CHECK_NULL(getHWnd);
+
+		jlong hwnd = env->CallLongMethod(peer, getHWnd);
+
+		env->DeleteLocalRef(clazz);
+		env->DeleteLocalRef(class_peer);
+		env->DeleteLocalRef(peer);
+
+		return hwnd;
+	}
+	return 0;
 }

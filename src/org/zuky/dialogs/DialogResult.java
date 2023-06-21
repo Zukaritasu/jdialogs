@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +18,35 @@
 package org.zuky.dialogs;
 
 /**
- * Resultados de {@link MessageBox}
+ * All the possible results that {@link MessageBox} can return
+ * depending on what is specified in the flags {@link MessageBoxButton}
  * 
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messagebox#return-value">
+ * 	MessageBox - Return value</a>
  * @author Zukaritasu
  *
  */
 public enum DialogResult {
 
+	/** Null result */
 	NONE (0),
+	/** The OK button was selected */
 	OK (1),
+	/** The Cancel button was selected */
 	CANCEL (2),
+	/** The Abort button was selected */
 	ABORT (3),
+	/** The Retry button was selected */
 	RETRY (4),
+	/** The Ignore button was selected */
 	IGNORE (5),
+	/** The Yes button was selected */
 	YES (6),
+	/** The No button was selected */
 	NO (7),
+	/** The Try Again button was selected */
 	TRY (10),
+	/** The Continue button was selected */
 	CONTINUE (11);
 	
 	private final int result;
@@ -41,26 +54,16 @@ public enum DialogResult {
 	DialogResult(int result) {
 		this.result = result;
 	}
-	
+
 	/**
-	 * Retorna el ID del resultado
+	 * Return the id that is linked to the enumerated one.
 	 * 
-	 * @return ID del resultado
+	 * @return id
 	 */
-	public int getIDResult() {
+	public int getID() {
 		return result;
 	}
 	
-	/**
-	 * El método recibe como parámetro el resultado que retorna el
-	 * método nativo MessageBox#showMessage(long, String, String, int)
-	 * y dependiendo del resultado el método retorna un enumerado y
-	 * si el resultado no es reconocido el método retorna
-	 * {@link DialogResult#NONE}
-	 * 
-	 * @param result el resultado
-	 * @return el resultado definido por un enumerado
-	 */
 	static DialogResult getDialogResult(int result) {
 		for (DialogResult dialogResult : values()) {
 			if (dialogResult.result == result) {

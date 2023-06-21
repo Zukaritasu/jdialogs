@@ -38,13 +38,12 @@
 #define CHECK_NULL(obj) if (obj == NULL) return JNI_FALSE;
 #define CHECK_NULL_OOM(obj) if (obj == NULL) return E_OUTOFMEMORY;
 
-// It shows an error occurred on the part of Windows.
-// Exceptions that occur in the jvm are displayed by the jvm
-// itself. Exceptions or errors can be displayed by console
-// or from a call to the JNIEnv::Throw or JNIEnv::ThrowNew method. 
-void ShowError(JNIEnv* env, unsigned long code = 0);
+void ShowError(JNIEnv* env, DWORD code = 0);
 void ShowOutOfMemory(JNIEnv* env, const char* comment = NULL);
 void ThrowNew(JNIEnv* env, const char* class_name, const char* comment = NULL);
 
 JNIFUNCTION(jstring)
 Java_org_zuky_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code);
+
+JNIFUNCTION(jlong)
+Java_org_zuky_dialogs_CommonDialog_getHWnd(JNIPARAMS, jobject window);

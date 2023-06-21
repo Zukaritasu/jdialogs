@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,26 +18,28 @@
 package org.zuky.dialogs;
 
 /**
- * Los botones que puede mostrar {@link MessageBox}
- * 
- * @author Zukaritasu
+ * Types and group of buttons available in the {@link MessageBox}
+ * <p>
+ * The documentation for this class listed is based on Microsoft official website
  *
+ * @author Zukaritasu
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messagebox#parameters">Parameters</a>
  */
 public enum MessageBoxButton {
 
-	/** {@link MessageBox} muestra el botón {@link MessageBoxButton#OK} */
+	/** The message box contains one push button: OK. This is the default */
 	OK               (0x00000000),
-	/** {@link MessageBox} muestra los botones {@link MessageBoxButton#OKCANCEL} */
+	/** The message box contains two push buttons: OK and Cancel */
 	OKCANCEL         (0x00000001),
-	/** {@link MessageBox} muestra los botones {@link MessageBoxButton#ABORTRETRYIGNORE} */
+	/** The message box contains three push buttons: Abort, Retry, and Ignore */
 	ABORTRETRYIGNORE (0x00000002),
-	/** {@link MessageBox} muestra los botones {@link MessageBoxButton#YESNOCANCEL} */
+	/** The message box contains three push buttons: Yes, No, and Cancel */
 	YESNOCANCEL      (0x00000003),
-	/** {@link MessageBox} muestra los botones {@link MessageBoxButton#YESNO} */
+	/** The message box contains two push buttons: Yes and No */
 	YESNO            (0x00000004),
-	/** {@link MessageBox} muestra los botones {@link MessageBoxButton#RETRYCANCEL} */
+	/** The message box contains two push buttons: Retry and Cancel */
 	RETRYCANCEL      (0x00000005),
-	/** {@link MessageBox} muestra los botones {@link MessageBoxButton#CANCELTRYCONTINUE} */
+	/** The message box contains three push buttons: Cancel, Try Again, Continue */
 	CANCELTRYCONTINUE(0x00000006);
 	
 	private int button;
@@ -45,14 +47,13 @@ public enum MessageBoxButton {
 	MessageBoxButton(int button) {
 		this.button = button;
 	}
-	
+
 	/**
-	 * Retorna un ID que identifica el botón o los botones que
-	 * se mostraran en {@link MessageBox}
-	 * 
-	 * @return ID del botón
+	 * Returns the ID of the button
+	 *
+	 * @return id
 	 */
-	public int getIDButton() {
+	public int getID() {
 		return button;
 	}
 }

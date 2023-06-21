@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,219 +22,190 @@ import java.io.File;
 import java.util.Objects;
 
 /**
- * Esta clase representa el cuadro de dialogo selector de carpetas
- * de Windows en donde se podrá seleccionar una carpeta del sistema.
+ * Allow you to navigate between system directories. By invoking the constructor
+ * {@link #FolderBrowserDialog(String)} "" or the method {@link #setRoot(String)}
+ * you can tell the dialog box in which directory to start browsing.
  * <p>
- * En el cuadro de dialogo se puede asignar una descripción
- * {@link #setDescription(String)} que le indica al usuario la operación
- * que se está realizando o lo que conlleva seleccionar una carpeta
- * 
+ * If you notice that it performs a function similar to {@link FileDialog}
+ * although note that in the dialog box it allows you to view files if required
+ * but it is more advisable to use {@link FileDialog}.
+ *
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/msi/browse-dialog">
+ * 	Browse Dialog - Win32
+ * </a>
  * @author Zukaritasu
  *
  */
 public class FolderBrowserDialog extends CommonDialog {
 
-	/**
-	 * El nombre de la carpeta
-	 * 
-	 * @see #getDisplayName()
-	 */
-	@NativeValue
+	@NativeModified
 	private String displayName;
-	
-	/**
-	 * La ruta absoluta de la carpeta
-	 * 
-	 * @see #getAbsolutePath()
-	 */
-	@NativeValue
+
+	@NativeModified
 	private String absolutePath;
-	
-	/**
-	 * La carpeta donde el cuadro de dialogo iniciara la navegación 
-	 * 
-	 * @see #setRoot(String)
-	 * @see #getRoot()
-	 */
+
 	private String root;
-	
-	/**
-	 * La descripción que se mostrara en el cuadro de dialogo  
-	 */
+
 	private String description;
 	
-	/**
-	 * Banderas del cuadro de dialogo
-	 */
+	// 0x00000040 - BIF_NEWDIALOGSTYLE
+	// 0x00000004 - BIF_STATUSTEXT
+	// 0x00000010 - BIF_EDITBOX
+	// 0x00000001 - BIF_RETURNONLYFSDIRS
+
 	private int flags = 0x00000040 | 0x00000004 | 0x00000010 | 0x00000001;
-	
+
 	/**
-	 * Crea una nueva instancia de esta clase {@link FolderBrowserDialog}
+	 * Creates a new instance of this class
 	 * 
-	 * @see #FolderBrowserDialog(File)
-	 * @see #FolderBrowserDialog(String)
+	 * @see #FolderBrowserDialog(File) 
+	 * @see #FolderBrowserDialog(String) 
 	 */
 	public FolderBrowserDialog() {
 	}
-	
+
 	/**
-	 * Crea una nueva instancia de esta clase. El
-	 * constructor recibe como parámetro la carpeta donde el cuadro
-	 * de dialogo iniciara la navegación
-	 * <p>
-	 * Si la ruta no es válida el cuadro de dialogo iniciara desde
-	 * una ruta predeterminada del sistema
-	 * 
-	 * @see #FolderBrowserDialog(File)
-	 * @param root la ruta de la carpeta
+	 * Creates a new instance of this class receiving the path of the
+	 * directory where the navigation will start.
+	 *
+	 * @param root directory root
 	 */
 	public FolderBrowserDialog(String root) {
 		setRoot(root);
 	}
-	
+
 	/**
-	 * Crea un nuevo cuadro de dialogo selector de carpetas. El
-	 * constructor recibe como parámetro la carpeta donde el cuadro
-	 * de dialogo iniciara la navegación
-	 * <p>
-	 * Si la ruta no es válida el cuadro de dialogo iniciara desde
-	 * una ruta predeterminada del sistema
-	 * 
-	 * @see #FolderBrowserDialog(String)
-	 * @exception NullPointerException el parametro es {@code null}
-	 * @param root la ruta de la carpeta
+	 * Creates a new instance of this class receiving the path of the
+	 * directory where the navigation will start.
+	 *
+	 * @exception NullPointerException param is {@code null}
+	 * @param root directory root
 	 */
 	public FolderBrowserDialog(File root) {
-		setRoot(Objects.requireNonNull(root, "param is null")
-				.getAbsolutePath());
+		setRoot(Objects.requireNonNull(root, "root is null").getAbsolutePath());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param parent - the parent window
+	 * @return is success
+	 */
 	@Override
 	public synchronized boolean show(Window parent) {
-		return showDialog(root, description, flags, 
-				getHandleWindow(parent));
+		return showDialog(root, description, flags, getHWnd(parent));
 	}
 	
 	private native boolean showDialog(String root, String title,
 			int flags, long hwndParent);
-	
+
 	/**
-	 * Retorna el nombre de la carpeta que se muestra en la caja
-	 * de texto del cuadro de dialogo
-	 * 
-	 * @return el nombre de la carpeta
+	 * Returns the name of the selected directory displayed in the text box.
+	 *
+	 * @return directory name
 	 */
 	public String getDisplayName() {
 		return displayName;
 	}
-	
+
 	/**
-	 * Retorna la ruta absoluta de la carpeta que fue seleccionada
-	 * en el cuadro de dialogo. Para obtener el nombre de la
-	 * carpeta {@link #getDisplayName()}
-	 * 
-	 * @return la ruta absoluta de la carpeta
+	 * Returns the absolute path of the selected element.
+	 * If the dialog box was canceled the method returns {@code null}.
+	 *
+	 * @return absolute path
 	 */
 	public String getAbsolutePath() {
 		return absolutePath;
 	}
 
 	/**
-	 * Retorna la ruta de la carpeta por donde inicio la navegación
-	 * el cuadro de dialogo. Si no se ha hecho un llamado previo al
-	 * método {@link #setRoot(String)}, en ese caso el método
-	 * retorna <code>null</code>
-	 * 
-	 * @see #setRoot(String)
-	 * @return la carpeta donde inicio la navegación el cuadro de
-	 *         dialogo
+	 * Returns the path from where you started the search in the dialog box.
+	 * <p>
+	 * note that if I select a directory, this method does not return the
+	 * parent directory of the selected directory.
+	 *
+	 * @return root directory
 	 */
 	public String getRoot() {
 		return root;
 	}
-	
+
 	/**
-	 * Asocia la carpeta por donde iniciara la navegación el cuadro
-	 * de dialogo. Si la ruta no es valida el cuadro de dialogo
-	 * iniciara desde una ruta predeterminada del sistema
-	 * 
-	 * @see #getRoot()
-	 * @param root la ruta de la carpeta
+	 * Specifies in which directory the navigation should start.
+	 * If the path entered is invalid or does not exist, in that case
+	 * the dialog box will make the decision where to start.
+	 *
+	 * @param root directory path
 	 */
 	public void setRoot(String root) {
 		this.root = root;
 	}
-	
+
 	/**
-	 * Retorna la descripción que se muestra en la parte superior
-	 * del cuadro de dialogo. Si no se ha hecho un llamado previo
-	 * al método {@link #setDescription(String)}, en ese caso el
-	 * método retorna <code>null</code> 
-	 * 
-	 * @see #setDescription(String)
+	 * Returns the description of the dialog box. If no description has
+	 * been set then it returns {@code null}.
 	 * @return description
 	 */
 	public String getDescription() {
 		return description;
 	}
-	
+
 	/**
-	 * Asigna la descripción que se mostrara en la parte superior
-	 * del cuadro de dialogo. Esta descripción le indica que le
-	 * indica al usuario la operación que se está realizando o lo
-	 * que conlleva seleccionar una carpeta
-	 * 
-	 * @param description la descripción
+	 * The dialog box allows you to display a description at the top of
+	 * the tree folders.
+	 * <p>
+	 * If no description is specified, no message will be displayed.
+	 *
+	 * @param description description of the dialog box
+	 * @see #getDescription()
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	/**
-	 * Habilita el cuadro de dialogo para que muestre un botón en la
-	 * parte inferior para crear una nueva carpeta en el directorio
-	 * seleccionado. {@code true} para habilitarlo; {@code false}
-	 * para deshabilitarlo. Por defecto el botón se muestra
-	 * 
-	 * @param newFolder mostrar el botón
+	 * If you need to have the option to create a directory by pressing
+	 * a button you can enable this option.
+	 *
+	 * @param newFolder create folder
 	 */
 	public void setButtonNewFolder(boolean newFolder) {
-		flags = flag(flags, 0x00000200, !newFolder);
+		/* BIF_NONEWFOLDERBUTTON */
+		flags = maskBit(flags, 0x00000200, !newFolder);
 	}
-	
+
 	/**
-	 * Retorna <code>true</code> si el cuadro de dialogo muestra el
-	 * botón para crear una nueva carpeta; <code>false</code> en
-	 * caso contrario
-	 * 
-	 * @return se muestra el botón
+	 * Returns {@code true} if the dialog box displays the button to create
+	 * a new directory.
+	 *
+	 * @return button new folder
+	 * @see #setButtonNewFolder(boolean) 
 	 */
 	public boolean isButtonNewFolder() {
+		/* BIF_NONEWFOLDERBUTTON */
 		return (flags & 0x00000200) == 0;
 	}
-	
+
 	/**
-	 * Habilita el cuadro de dialogo para que además de incluir y
-	 * seleccionar carpetas también se pueda incluir y seleccionar
-	 * archivos pero es recomendable utilizar {@link FileDialog}
-	 * porque contiene más funcionalidades como seleccionar múltiples
-	 * archivos o asociar un filtro de busqueda por extensión
-	 * 
-	 * @see #isIncludeFiles()
-	 * @param includeFiles incluir archivos
+	 * When the dialog box is displayed it will include in its search the
+	 * files found in the directory.
+	 *
+	 * @param includeFiles include files
+	 * @see #isIncludeFiles()    
 	 */
 	public void setIncludeFiles(boolean includeFiles) {
-		flags = flag(flags, 0x00004000, includeFiles);
+		/* BIF_BROWSEINCLUDEFILES */
+		flags = maskBit(flags, 0x00004000, includeFiles);
 	}
-	
+
 	/**
-	 * Retorna <code>true</code> si el cuadro de dialogo incluye
-	 * archivos de lo contrario retorna <code>false</code>
-	 * 
+	 * Returns true if the dialog box includes files in navigation.
+	 *
+	 * @return include files
 	 * @see #setIncludeFiles(boolean)
-	 * @return incluye archivos
 	 */
 	public boolean isIncludeFiles() {
+		/* BIF_BROWSEINCLUDEFILES */
 		return (flags & 0x00004000) != 0;
 	}
 }

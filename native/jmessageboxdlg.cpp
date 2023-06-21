@@ -27,7 +27,8 @@ Java_org_zuky_dialogs_MessageBox_showMessage(JNIPARAMS,
 	const jchar* message = msg ? env->GetStringChars(msg, NULL) : NULL;
 	const jchar* title = caption ? env->GetStringChars(caption, NULL) : NULL;
 	
-	int result  = MessageBox((HWND)hwndParent, (const wchar_t*)message, (const wchar_t*)title, type);
+	int result  = MessageBox((HWND)hwndParent, (const wchar_t*)message, 
+		(const wchar_t*)title, type);
 	
 	if (msg) env->ReleaseStringChars(msg, message);
 	if (caption) env->ReleaseStringChars(caption, title);

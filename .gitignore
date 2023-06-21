@@ -1,10 +1,15 @@
 /jdialogs.jar
+/jdialogs.iml
 /*.dll
+/.idea
+/out
+/lib
+/vstudio/x64
 /vstudio/.vs
 /vstudio/Debug
 /vstudio/Release
 /vstudio/jdialogs.sdf
 /vstudio/jdialogs.vcxproj.filters
-/bin/
 /src/test/MainTest.java
 /*.zip
+/out

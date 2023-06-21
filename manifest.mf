@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Created-By: JDK 17 (Oracle Corporation)
+Built-By: Zukaritasu
+Build-Jdk-Spec: 17
+Specification-Title: Windows Common Dialogs
+Specification-Version: 2.0
+Specification-Vendor: Zukaritasu
+Implementation-Title: Windows Common Dialogs
+Implementation-Version: 2.0
+Implementation-Vendor: Zukaritasu
+Implementation-Vendor-Id: org.zuka.dialogs
+Class-Path: /lib/jdialos-x86.dll;/lib/jdialogs-x64.dll

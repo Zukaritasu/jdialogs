@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,35 @@
 
 package org.zuky.dialogs;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+
 /**
  * @author Zukaritasu
- *
  */
 final class NativeLibrary {
+	
+	private static void unpackLibrary(String lib, String libName) {
+		if (!Files.exists(Paths.get(libName, new String[] {}))) {
+			try {
+				Files.copy(Objects.requireNonNull(NativeLibrary.class.getClassLoader()
+						.getResourceAsStream(lib)), Paths.get(libName, new String[] {}));
+			} catch (IOException e) {
+				System.err.println(e);
+			}
+		}
+	}
 
 	static void loadLibrary() {
 		if (!System.getProperty("os.name").toLowerCase().startsWith("win"))
-			throw new RuntimeException("this system is not supported");
-		
-		String libraryName = "jdialogs";
-		if (System.getProperty("os.arch").contains("64"))
-			libraryName += 64;
-		libraryName += ".dll";
-		System.load(libraryName);
+			throw new RuntimeException("This system is not supported");
+		String libName = String.format("jdialogs-x%d.dll", System.getProperty("os.arch")
+				.contains("64") ? 64 : 86);
+		unpackLibrary("lib/" + libName, libName);
+		System.load(new File(libName).getAbsolutePath());
 	}
 }
