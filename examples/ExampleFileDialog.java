@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.zuky.dialogs.FileDialog;
-import org.zuky.dialogs.WindowsException;
+import org.zuka.dialogs.FileDialog;
+import org.zuka.dialogs.WindowsException;
 
 
 /**
@@ -29,7 +29,6 @@ public class ExampleFileDialog {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		FileDialog dialog = new FileDialog("C:\\Users\\Zukaritasu\\Pictures");
 		dialog.setMultiSelected(true);
 		dialog.setFilter(new String[] {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.zuky.dialogs.FolderBrowserDialog;
+import org.zuka.dialogs.FolderBrowserDialog;
 
 /**
  * @author Zukaritasu
@@ -27,12 +27,10 @@ public class ExampleFolderBrowserDialog {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		FolderBrowserDialog dialog = new FolderBrowserDialog("C:\\Users\\Zukaritasu\\Desktop");
 		dialog.setDescription("Select a folder");
 		if (dialog.show()) {
 			System.out.println("The folder you selected was: " + dialog.getAbsolutePath());
 		}
 	}
-
 }

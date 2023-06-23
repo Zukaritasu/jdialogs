@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.zuky.dialogs;
+package org.zuka.dialogs;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;

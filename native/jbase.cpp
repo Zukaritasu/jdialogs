@@ -29,7 +29,7 @@ static char* GetFormatMessage(DWORD code)
 
 static void ShowWin32Exception(JNIEnv* env, DWORD code)
 {
-	jclass clazz = env->FindClass("org/zuky/dialogs/WindowsException");
+	jclass clazz = env->FindClass("org/zuka/dialogs/WindowsException");
 	if (clazz != NULL)
 	{
 		jmethodID const_ = env->GetMethodID(clazz, "<init>", "(I)V");

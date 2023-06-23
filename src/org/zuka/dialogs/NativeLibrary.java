@@ -16,7 +16,7 @@
  *
  */
 
-package org.zuky.dialogs;
+package org.zuka.dialogs;
 
 import java.io.File;
 import java.io.IOException;

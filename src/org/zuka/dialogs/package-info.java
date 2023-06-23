@@ -15,24 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import java.awt.Font;
-
-import org.zuka.dialogs.FontDialog;
-
 /**
+ * 
+ * {@link org.zuka.dialogs.ColorDialog},
+ * {@link org.zuka.dialogs.FileDialog},
+ * {@link org.zuky.dialogs.FolderBrowserDialog},
+ * {@link org.zuka.dialogs.FontDialog} y
+ * {@link org.zuka.dialogs.MessageBox}
+ * 
  * @author Zukaritasu
  *
  */
-public class ExampleFontDialog {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		FontDialog dialog = new FontDialog(new Font("Consolas", 0, 13));
-		if (dialog.show()) {
-			// The selected source is displayed 
-			System.out.println(dialog.getFont());
-		}
-	}
-}
+package org.zuka.dialogs;

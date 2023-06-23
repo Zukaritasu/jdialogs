@@ -1,4 +1,4 @@
-// Copyright (C) 2021-2022 Zukaritasu
+// Copyright (C) 2021-2023 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 #include "jbase.hpp"
 
 JNIFUNCTION(jint)
-Java_org_zuky_dialogs_MessageBox_showMessage(JNIPARAMS, 
+Java_org_zuka_dialogs_MessageBox_showMessage(JNIPARAMS, 
 											 jlong hwndParent, 
 											 jstring msg, 
 											 jstring caption, 

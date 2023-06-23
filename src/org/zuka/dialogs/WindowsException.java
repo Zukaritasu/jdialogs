@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.zuky.dialogs;
+package org.zuka.dialogs;
 
 /**
  * In case one of the WinAPI functions behaves in a way or returns an

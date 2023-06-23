@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2022 Zukaritasu
+ * Copyright (C) 2021-2023 Zukaritasu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,19 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.zuky.dialogs.ColorDialog;
+import org.zuka.dialogs.ColorDialog;
 
 /**
+ * Small example on the use of the {@link ColorDialog} class.
+ * For more information read the documentation
+ * 
  * @author Zukaritasu
  *
  */
 public class ExampleColorDialog {
 
 	/**
-	 * @param args
+	 * @param args program arguments
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		ColorDialog dialog = new ColorDialog(/* auxiliar new int[] { colors RGB } */);
 		dialog.setFullOpen(true); /* open custom colors */
 		if (dialog.show()) {
@@ -37,5 +39,4 @@ public class ExampleColorDialog {
 			}
 		}
 	}
-
 }
