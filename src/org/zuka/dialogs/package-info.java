@@ -19,7 +19,7 @@
  * 
  * {@link org.zuka.dialogs.ColorDialog},
  * {@link org.zuka.dialogs.FileDialog},
- * {@link org.zuky.dialogs.FolderBrowserDialog},
+ * {@link org.zuka.dialogs.FolderBrowserDialog},
  * {@link org.zuka.dialogs.FontDialog} y
  * {@link org.zuka.dialogs.MessageBox}
  * 

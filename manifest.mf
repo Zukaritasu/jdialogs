@@ -1,2 +1,9 @@
 Manifest-Version: 1.0
-
+Created-By: Zukaritasu
+Build-Jdk-Spec: 17
+Specification-Title: Windows Common Dialogs
+Specification-Vendor: Zukaritasu
+Specification-Version: 1.9
+Implementation-Title: Windows Common Dialogs
+Implementation-Vendor: Zukaritasu
+Implementation-Version: 1.9.4

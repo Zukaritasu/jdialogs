@@ -1,1 +1,1 @@
-moduleSearchIndex = [{"l":"execute"}];updateSearchResults();
+moduleSearchIndex = [{"l":"jdialogs"}];updateSearchResults();

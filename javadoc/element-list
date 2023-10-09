@@ -1,2 +1,2 @@
-module:execute
-org.zuky.dialogs
+module:jdialogs
+org.zuka.dialogs

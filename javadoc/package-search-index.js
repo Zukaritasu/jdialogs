@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"execute","l":"org.zuky.dialogs"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"jdialogs","l":"org.zuka.dialogs"}];updateSearchResults();
