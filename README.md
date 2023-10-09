@@ -17,8 +17,8 @@ This library was not made with the intention of being cross-platform with other 
 
 ## Requirements 
 
-* **Windows Vista** or later 32 or 64 bit
-* **Java** version 8 or later versions
+* **Windows** 10 64 bit
+* **Java** version 17 or later versions
 
 ## More information
 
