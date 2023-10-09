@@ -40,4 +40,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Zukaritasu Packages</name>
+            <url>https://maven.pkg.github.com/Zukaritasu/jdialogs</url>
+        </repository>
+    </distributionManagement>
+
 </project>
