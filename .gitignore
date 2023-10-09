@@ -5,6 +5,7 @@
 /out
 /lib
 /vstudio/x64
+/vstudio/x64/Release
 /vstudio/.vs
 /vstudio/Debug
 /vstudio/Release
