@@ -1,6 +1,7 @@
 /**
  * The java.desktop module is required to use Java AWT.
  */
-module execute {
-	requires java.desktop;
+module jdialogs {
+	requires transitive java.desktop;
+	exports org.zuka.dialogs;
 }
