@@ -15,3 +15,5 @@
 /*.zip
 /target
 /javadoc
+/src/main
+/src/test
