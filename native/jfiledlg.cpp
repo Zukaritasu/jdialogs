@@ -298,7 +298,7 @@ finish:
 	// is responsible for showing them, including the out of memory
 
 	// The user closed the window by cancelling the operation
-	if (hr != ERROR_CANCELLED) 
+	if (hr != S_OK && hr != HRESULT_FROM_WIN32(ERROR_CANCELLED))
 		ShowError(env, hr);
 
 	return SUCCEEDED(hr);
