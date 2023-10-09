@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.zukaritasu</groupId>
+    <artifactId>jdialogs</artifactId>
+    <version>1.2.1</version>
+    <name>org.zuka:${project.artifactId}</name>
+    <description>About This library allows you to use common Windows dialogs in Java.
+        The library does not have support for other platforms, only Windows.</description>
+    <url>https://github.com/Zukaritasu/jdialogs</url>
+
+    <licenses>
+        <license>
+            <name>GNU general Public License, Version 3</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Zukaritasu</name>
+            <email>zukaritasu@gmail.com</email>
+            <organization>Zuka</organization>
+            <organizationUrl>https://github.com/Zukaritasu</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/Zukaritasu/jdialogs.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Zukaritasu/jdialogs.git</developerConnection>
+        <url>https://github.com/Zukaritasu/jdialogs/tree/main</url>
+    </scm>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
