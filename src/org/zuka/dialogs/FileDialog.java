@@ -66,7 +66,7 @@ public class FileDialog extends CommonDialog {
 	
 	static {
 		// The setSelectedFolders option is only supported since Windows version 6.
-		String[] version = System.getProperty("os.version").split(".");
+		String[] version = System.getProperty("os.version").split("\\.");
 		isSupportWinVersion = Integer.parseInt(version[0]) > 6;
 	}
 
