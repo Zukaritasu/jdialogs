@@ -7,7 +7,7 @@
     <groupId>io.github.zukaritasu</groupId>
     <artifactId>jdialogs</artifactId>
     <version>1.2.1</version>
-    <name>org.zuka:${project.artifactId}</name>
+    <name>org.zuka.dialogs</name>
     <description>About This library allows you to use common Windows dialogs in Java.
         The library does not have support for other platforms, only Windows.</description>
     <url>https://github.com/Zukaritasu/jdialogs</url>
