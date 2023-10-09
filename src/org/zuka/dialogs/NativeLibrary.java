@@ -19,34 +19,20 @@
 package org.zuka.dialogs;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
 
 /**
  * @author Zukaritasu
  */
 final class NativeLibrary {
 	
-	private static void unpackLibrary(String lib, String libName) {
-		if (!Files.exists(Paths.get(libName, new String[] {}))) {
-			try {
-				Files.copy(Objects.requireNonNull(NativeLibrary.class.getClassLoader()
-						.getResourceAsStream(lib)), Paths.get(libName, new String[] {}));
-			} catch (IOException e) {
-				System.err.println(e);
-			}
-		}
-	}
+	private static boolean isLoading;
 
 	static void loadLibrary() {
-		if (!System.getProperty("os.name").toLowerCase().startsWith("win"))
-			throw new RuntimeException("This system is not supported");
-		String libName = String.format("jdialogs-x%d.dll", System.getProperty("os.arch")
-				.contains("64") ? 64 : 86);
-		unpackLibrary("lib/" + libName, libName);
-		System.load(new File(libName).getAbsolutePath());
+		if (!isLoading) {
+			if (!System.getProperty("os.name").toLowerCase().startsWith("win"))
+				throw new RuntimeException("This system is not supported");
+			System.load(new File("./jdialogs-x64.dll").getAbsolutePath());
+			isLoading = true;
+		}
 	}
 }
