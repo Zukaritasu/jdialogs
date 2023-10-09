@@ -1,9 +1,9 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
-#include <winres.h>
+#include "winres.h"
 /////////////////////////////////////////////////////////////////////////////
-// Espanol (Mexico) resources
+// Español (México) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
@@ -33,12 +33,12 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Espanol (Mexico) resources
+#endif    // Español (México) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Espanol (Venezuela) resources
+// Español (Venezuela) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESV)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_VENEZUELA
@@ -50,8 +50,8 @@ LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_VENEZUELA
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,9,352,1
- PRODUCTVERSION 1,9,352,1
+ FILEVERSION 1,9,4,1
+ PRODUCTVERSION 1,9,4,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -66,14 +66,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "The Free Software Foundation"
+            VALUE "CompanyName", "Zukaritasu Developer"
             VALUE "FileDescription", "Windows Common Dialogs"
-            VALUE "FileVersion", "1.9.352.1"
+            VALUE "FileVersion", "1.9.4.1"
             VALUE "InternalName", "jdialogs.dll"
             VALUE "LegalCopyright", "Copyright (c) 2023 Zukaritasu"
             VALUE "OriginalFilename", "jdialogs.dll"
             VALUE "ProductName", "jdialogs"
-            VALUE "ProductVersion", "1.9.352.1"
+            VALUE "ProductVersion", "1.9.4.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -82,7 +82,7 @@ BEGIN
     END
 END
 
-#endif    // Espanol (Venezuela) resources
+#endif    // Español (Venezuela) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

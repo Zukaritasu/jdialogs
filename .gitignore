@@ -11,9 +11,12 @@
 /vstudio/Release
 /vstudio/jdialogs.sdf
 /vstudio/jdialogs.vcxproj.filters
+/vstudio/resource.aps
 /src/test/MainTest.java
 /*.zip
 /target
 /javadoc
 /src/main
 /src/test
+/bin/
+/*.jar
