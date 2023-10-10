@@ -1,9 +1,8 @@
 /jdialogs.jar
-/jdialogs.iml
 /*.dll
 /.idea
 /out
-/src/main/resources/lib
+/src/lib
 /vstudio/x64
 /vstudio/x64/Release
 /vstudio/.vs
