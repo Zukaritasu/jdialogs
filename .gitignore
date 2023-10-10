@@ -3,7 +3,7 @@
 /*.dll
 /.idea
 /out
-/lib
+/src/main/resources/lib
 /vstudio/x64
 /vstudio/x64/Release
 /vstudio/.vs
