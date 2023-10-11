@@ -19,6 +19,10 @@
 package org.zuka.dialogs;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 /**
  * @author Zukaritasu
@@ -27,12 +31,32 @@ final class NativeLibrary {
 	
 	private static boolean isLoading;
 
+	private static final String RESOURCE_DLL_NAME = "jdialogs-x64.dll";
+
 	static void loadLibrary() {
 		if (!isLoading) {
 			if (!System.getProperty("os.name").toLowerCase().startsWith("win"))
 				throw new RuntimeException("This system is not supported");
-			System.load(new File("./jdialogs-x64.dll").getAbsolutePath());
+			System.load(exportLibrary());
 			isLoading = true;
 		}
+	}
+
+	private static String exportLibrary() {
+		File dir = new File(System.getProperty("user.home") + "/.jdialogs");
+		if (!dir.exists()) {
+			if (!dir.mkdir()) {
+				throw new RuntimeException("Create directory error" + dir);
+			}
+		}
+
+		Path dllLibrary = new File(dir, RESOURCE_DLL_NAME).toPath();
+		try {
+			Files.copy(NativeLibrary.class.getResourceAsStream("/lib/" + RESOURCE_DLL_NAME), dllLibrary,
+					StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return dllLibrary.toString();
 	}
 }
