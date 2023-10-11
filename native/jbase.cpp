@@ -1,5 +1,5 @@
 
-// Copyright (C) 2021-2022 Zukaritasu
+// Copyright (C) 2021-2023 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ static char* GetFormatMessage(DWORD code)
 
 static void ShowWin32Exception(JNIEnv* env, DWORD code)
 {
-	jclass clazz = env->FindClass("org/zuka/dialogs/WindowsException");
+	jclass clazz = env->FindClass("com/zukadev/dialogs/WindowsException");
 	if (clazz != NULL)
 	{
 		jmethodID const_ = env->GetMethodID(clazz, "<init>", "(I)V");
@@ -93,7 +93,7 @@ void ThrowNew(JNIEnv* env, const char* class_name, const char* comment)
 }
 
 JNIFUNCTION(jstring) 
-Java_org_zuka_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code)
+Java_com_zukadev_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code)
 {
 	char* message = GetFormatMessage(code);
 	if (message != NULL)
@@ -111,7 +111,7 @@ Java_org_zuka_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code)
 }
 
 JNIFUNCTION(jlong)
-Java_org_zuka_dialogs_CommonDialog_getHWnd0(JNIPARAMS, jobject window)
+Java_com_zukadev_dialogs_CommonDialog_getHWnd0(JNIPARAMS, jobject window)
 {
 	jclass clazz = env->FindClass("sun/awt/windows/WToolkit");
 	CHECK_NULL(clazz);

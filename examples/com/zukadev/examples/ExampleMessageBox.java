@@ -1,3 +1,4 @@
+package com.zukadev.examples;
 /**
  * Copyright (C) 2021-2023 Zukaritasu
  *
@@ -15,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.zuka.dialogs.MessageBox;
-import org.zuka.dialogs.MessageBoxButton;
-import org.zuka.dialogs.MessageBoxIcon;
+import com.zukadev.dialogs.MessageBox;
+import com.zukadev.dialogs.MessageBoxButton;
+import com.zukadev.dialogs.MessageBoxIcon;
 
 /**
  * @author Zukaritasu

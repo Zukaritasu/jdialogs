@@ -1,3 +1,4 @@
+package com.zukadev.examples;
 /**
  * Copyright (C) 2021-2023 Zukaritasu
  *
@@ -15,28 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.zuka.dialogs.ColorDialog;
+import java.awt.Font;
+
+import com.zukadev.dialogs.FontDialog;
 
 /**
- * Small example on the use of the {@link ColorDialog} class.
- * For more information read the documentation
- * 
  * @author Zukaritasu
  *
  */
-public class ExampleColorDialog {
+public class ExampleFontDialog {
 
 	/**
-	 * @param args program arguments
+	 * @param args
 	 */
 	public static void main(String[] args) {
-		ColorDialog dialog = new ColorDialog(/* auxiliar new int[] { colors RGB } */);
-		dialog.setFullOpen(true); /* open custom colors */
+		FontDialog dialog = new FontDialog(new Font("Consolas", 0, 13));
 		if (dialog.show()) {
-			System.out.println("Selected color: " + dialog.getColor());
-			for (int color : dialog.getColors()) {
-				System.out.println("Color RGB: " + color);
-			}
+			// The selected source is displayed 
+			System.out.println(dialog.getFont());
 		}
 	}
 }

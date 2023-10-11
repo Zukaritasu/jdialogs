@@ -18,7 +18,7 @@
 #include "jbase.hpp"
 
 JNIFUNCTION(jint)
-Java_org_zuka_dialogs_MessageBox_showMessage(JNIPARAMS, 
+Java_com_zukadev_dialogs_MessageBox_showMessage(JNIPARAMS, 
 											 jlong hwndParent, 
 											 jstring msg, 
 											 jstring caption, 

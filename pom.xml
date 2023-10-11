@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.zukaritasu</groupId>
+    <groupId>com.zukadev</groupId>
     <artifactId>jdialogs</artifactId>
-    <version>1.9.5-SNAPSHOT</version>
-    <name>org.zuka.dialogs</name>
+    <version>1.9.6-SNAPSHOT</version>
+    <name>com.zukadev.dialogs</name>
     <description>About This library allows you to use common Windows dialogs in Java.
         The library does not have support for other platforms, only Windows.</description>
     <url>https://github.com/Zukaritasu/jdialogs</url>
@@ -23,7 +23,7 @@
         <developer>
             <name>Zukaritasu</name>
             <email>zukaritasu@gmail.com</email>
-            <organization>Zuka</organization>
+            <organization>ZukaDev</organization>
             <organizationUrl>https://github.com/Zukaritasu</organizationUrl>
         </developer>
     </developers>

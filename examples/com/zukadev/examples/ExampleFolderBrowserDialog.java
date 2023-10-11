@@ -1,3 +1,4 @@
+package com.zukadev.examples;
 /**
  * Copyright (C) 2021-2023 Zukaritasu
  *
@@ -15,24 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import java.awt.Font;
-
-import org.zuka.dialogs.FontDialog;
+import com.zukadev.dialogs.FolderBrowserDialog;
 
 /**
  * @author Zukaritasu
  *
  */
-public class ExampleFontDialog {
+public class ExampleFolderBrowserDialog {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		FontDialog dialog = new FontDialog(new Font("Consolas", 0, 13));
+		FolderBrowserDialog dialog = new FolderBrowserDialog("C:\\Users\\Zukaritasu\\Desktop");
+		dialog.setDescription("Select a folder");
 		if (dialog.show()) {
-			// The selected source is displayed 
-			System.out.println(dialog.getFont());
+			System.out.println("The folder you selected was: " + dialog.getAbsolutePath());
 		}
 	}
 }

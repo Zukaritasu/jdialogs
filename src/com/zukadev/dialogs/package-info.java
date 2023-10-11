@@ -17,13 +17,13 @@
 
 /**
  * 
- * {@link org.zuka.dialogs.ColorDialog},
- * {@link org.zuka.dialogs.FileDialog},
- * {@link org.zuka.dialogs.FolderBrowserDialog},
- * {@link org.zuka.dialogs.FontDialog} y
- * {@link org.zuka.dialogs.MessageBox}
+ * {@link com.zukadev.dialogs.ColorDialog},
+ * {@link com.zukadev.dialogs.FileDialog},
+ * {@link com.zukadev.dialogs.FolderBrowserDialog},
+ * {@link com.zukadev.dialogs.FontDialog} y
+ * {@link com.zukadev.dialogs.MessageBox}
  * 
  * @author Zukaritasu
  *
  */
-package org.zuka.dialogs;
+package com.zukadev.dialogs;

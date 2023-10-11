@@ -18,7 +18,7 @@
 
 
 JNIFUNCTION(jboolean) 
-Java_org_zuka_dialogs_ColorDialog_showDialog(JNIPARAMS, jint flags, jlong hwndParent)
+Java_com_zukadev_dialogs_ColorDialog_showDialog(JNIPARAMS, jint flags, jlong hwndParent)
 {
 	jclass clazz = env->GetObjectClass(obj);
 	CHECK_NULL(clazz);

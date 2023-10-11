@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.zuka.dialogs;
+package com.zukadev.dialogs;
 
 import java.awt.Color;
 import java.awt.Font;

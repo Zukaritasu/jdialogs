@@ -43,7 +43,7 @@ void ShowOutOfMemory(JNIEnv* env, const char* comment = NULL);
 void ThrowNew(JNIEnv* env, const char* class_name, const char* comment = NULL);
 
 JNIFUNCTION(jstring)
-Java_org_zuka_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code);
+Java_com_zukadev_dialogs_WindowsException_getFormatMessage(JNIPARAMS, jint code);
 
 JNIFUNCTION(jlong)
-Java_org_zuka_dialogs_CommonDialog_getHWnd0(JNIPARAMS, jobject window);
+Java_com_zukadev_dialogs_CommonDialog_getHWnd0(JNIPARAMS, jobject window);

@@ -50,7 +50,7 @@ static BOOL InitializeLogFont(JNIEnv* env, LOGFONT& logf, HDC hdc,
 }
 
 JNIFUNCTION(jboolean)
-Java_org_zuka_dialogs_FontDialog_showDialog(JNIPARAMS, 
+Java_com_zukadev_dialogs_FontDialog_showDialog(JNIPARAMS, 
 											jstring name, 
 											jint style, 
 											jint size, 

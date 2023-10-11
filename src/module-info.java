@@ -3,5 +3,5 @@
  */
 module jdialogs {
 	requires transitive java.desktop;
-	exports org.zuka.dialogs;
+	exports com.zukadev.dialogs;
 }

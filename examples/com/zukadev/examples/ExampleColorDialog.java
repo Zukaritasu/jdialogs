@@ -1,3 +1,4 @@
+package com.zukadev.examples;
 /**
  * Copyright (C) 2021-2023 Zukaritasu
  *
@@ -15,22 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.zuka.dialogs.FolderBrowserDialog;
+import com.zukadev.dialogs.ColorDialog;
 
 /**
+ * Small example on the use of the {@link ColorDialog} class.
+ * For more information read the documentation
+ * 
  * @author Zukaritasu
  *
  */
-public class ExampleFolderBrowserDialog {
+public class ExampleColorDialog {
 
 	/**
-	 * @param args
+	 * @param args program arguments
 	 */
 	public static void main(String[] args) {
-		FolderBrowserDialog dialog = new FolderBrowserDialog("C:\\Users\\Zukaritasu\\Desktop");
-		dialog.setDescription("Select a folder");
+		ColorDialog dialog = new ColorDialog(/* auxiliar new int[] { colors RGB } */);
+		dialog.setFullOpen(true); /* open custom colors */
 		if (dialog.show()) {
-			System.out.println("The folder you selected was: " + dialog.getAbsolutePath());
+			System.out.println("Selected color: " + dialog.getColor());
+			for (int color : dialog.getColors()) {
+				System.out.println("Color RGB: " + color);
+			}
 		}
 	}
 }

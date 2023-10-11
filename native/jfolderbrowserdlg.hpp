@@ -18,7 +18,7 @@
 #include "jbase.hpp"
 
 JNIFUNCTION(jboolean) 
-Java_org_zuka_dialogs_FolderBrowserDialog_showDialog(JNIPARAMS, 
+Java_com_zukadev_dialogs_FolderBrowserDialog_showDialog(JNIPARAMS, 
 													 jstring root, 
 													 jstring description, 
 													 jint flags, 

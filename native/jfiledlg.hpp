@@ -18,7 +18,7 @@
 #pragma once
 
 JNIFUNCTION(jboolean) 
-Java_org_zuka_dialogs_FileDialog_showDialog(JNIPARAMS, 
+Java_com_zukadev_dialogs_FileDialog_showDialog(JNIPARAMS, 
 											jboolean mode,
 											jstring fileNameLabel,
 											jstring okButtonLabel,

@@ -1,3 +1,4 @@
+package com.zukadev.examples;
 /**
  * Copyright (C) 2021-2023 Zukaritasu
  *
@@ -15,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.zuka.dialogs.FileDialog;
-import org.zuka.dialogs.WindowsException;
+import com.zukadev.dialogs.FileDialog;
+import com.zukadev.dialogs.WindowsException;
 
 
 /**

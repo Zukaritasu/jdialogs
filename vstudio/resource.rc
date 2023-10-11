@@ -68,12 +68,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Zukaritasu Developer"
             VALUE "FileDescription", "Windows Common Dialogs"
-            VALUE "FileVersion", "1.9.4.1"
-            VALUE "InternalName", "jdialogs.dll"
+            VALUE "FileVersion", "1.9.6.1"
+            VALUE "InternalName", "jdialogs-x64.dll"
             VALUE "LegalCopyright", "Copyright (c) 2023 Zukaritasu"
-            VALUE "OriginalFilename", "jdialogs.dll"
+            VALUE "OriginalFilename", "jdialogs-x64.dll"
             VALUE "ProductName", "jdialogs"
-            VALUE "ProductVersion", "1.9.4.1"
+            VALUE "ProductVersion", "1.9.6.1"
         END
     END
     BLOCK "VarFileInfo"
