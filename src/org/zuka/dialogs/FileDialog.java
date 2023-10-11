@@ -274,9 +274,9 @@ public class FileDialog extends CommonDialog {
 	/**
 	 * <pre>
 	 * 	setFilter(new String[] {
-	 * 	      "Archivo de texto (*.txt)", "*.txt",
-	 * 	      "Archivo de imagen (*.jpg *.png)", "*.jpg;*.png",
-	 * 	      "Todo los archivos", "*.*"
+	 * 	      "Text file (*.txt)", "*.txt",
+	 * 	      "Image file (*.jpg *.png)", "*.jpg;*.png",
+	 * 	      "All files", "*.*"
 	 * 	});
 	 * </pre>
 	 */
