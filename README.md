@@ -33,9 +33,9 @@ The library has not been fully tested in case of the use of threads or any actio
 
 ```xml
 <dependency>
-	<groupId>com.zukadev</groupId>
-	<artifactId>jdialogs</artifactId>
-	<version>1.9.6-SNAPSHOT</version>
+   <groupId>com.zukadev</groupId>
+   <artifactId>jdialogs</artifactId>
+   <version>1.9.6-SNAPSHOT</version>
 </dependency>
 ```
 
