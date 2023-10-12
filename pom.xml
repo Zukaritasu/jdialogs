@@ -1,64 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.zukadev</groupId>
-    <artifactId>jdialogs</artifactId>
-    <version>1.9.6-SNAPSHOT</version>
-    <name>com.zukadev.dialogs</name>
-    <description>About This library allows you to use common Windows dialogs in Java.
-        The library does not have support for other platforms, only Windows.</description>
-    <url>https://github.com/Zukaritasu/jdialogs</url>
+	<groupId>com.zukadev</groupId>
+	<artifactId>jdialogs</artifactId>
+	<version>1.9.6-SNAPSHOT</version>
+	<name>com.zukadev.dialogs</name>
+	<description>About This library allows you to use common Windows dialogs in
+		Java.
+		The library does not have support for other platforms, only Windows.</description>
+	<url>https://github.com/Zukaritasu/jdialogs</url>
 
-    <licenses>
-        <license>
-            <name>GNU general Public License, Version 3</name>
-            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>GNU general Public License, Version 3</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+		</license>
+	</licenses>
 
-    <developers>
-        <developer>
-            <name>Zukaritasu</name>
-            <email>zukaritasu@gmail.com</email>
-            <organization>ZukaDev</organization>
-            <organizationUrl>https://github.com/Zukaritasu</organizationUrl>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<name>Zukaritasu</name>
+			<email>zukaritasu@gmail.com</email>
+			<organization>ZukaDev</organization>
+			<organizationUrl>https://github.com/Zukaritasu</organizationUrl>
+		</developer>
+	</developers>
 
-    <scm>
-        <connection>scm:git:git://github.com/Zukaritasu/jdialogs.git</connection>
-        <developerConnection>scm:git:ssh://github.com:Zukaritasu/jdialogs.git</developerConnection>
-        <url>https://github.com/Zukaritasu/jdialogs/tree/main</url>
-    </scm>
+	<scm>
+		<connection>scm:git:git://github.com/Zukaritasu/jdialogs.git</connection>
+		<developerConnection>scm:git:ssh://github.com:Zukaritasu/jdialogs.git</developerConnection>
+		<url>https://github.com/Zukaritasu/jdialogs/tree/main</url>
+	</scm>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Zukaritasu Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/Zukaritasu/jdialogs</url>
-        </repository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Zukaritasu Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/Zukaritasu/jdialogs</url>
+		</repository>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<archive>
+						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<configuration>
+							<keyname>${gpg.keyname}</keyname>
+							<passphraseServerId>${gpg.keyname}</passphraseServerId>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
