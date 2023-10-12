@@ -29,6 +29,16 @@ The library has not been fully tested in case of the use of threads or any actio
 * **Windows** 10 64 bit
 * **Java** version 17 or later versions
 
+## Dependency
+
+```xml
+<dependency>
+	<groupId>com.zukadev</groupId>
+	<artifactId>jdialogs</artifactId>
+	<version>1.9.6-SNAPSHOT</version>
+</dependency>
+```
+
 ## More information
 
 * [Examples](./examples)
