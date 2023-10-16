@@ -18,4 +18,5 @@
 /bin/
 /*.jar
 /releases
-/src/com/zukadev/dialogs/CommonDialog.java.asc
+/pom.xml.releaseBackup
+/lib

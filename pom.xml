@@ -4,7 +4,7 @@
 
 	<groupId>com.zukadev</groupId>
 	<artifactId>jdialogs</artifactId>
-	<version>1.9.7</version>
+	<version>1.9.7-SNAPSHOT</version>
 	<name>com.zukadev.dialogs</name>
 	<description>About This library allows you to use common Windows dialogs in Java. The library does not have support for other platforms, only Windows.</description>
 	<url>https://github.com/Zukaritasu/jdialogs</url>
@@ -29,7 +29,7 @@
 		<connection>scm:git:git://github.com/Zukaritasu/jdialogs.git</connection>
 		<developerConnection>scm:git:ssh://github.com/Zukaritasu/jdialogs.git</developerConnection>
 		<url>https://github.com/Zukaritasu/jdialogs/tree/main</url>
-		<tag>jdialogs-1.9.7</tag>
+		<tag>1.9.7</tag>
 	</scm>
 
 	<properties>
@@ -52,10 +52,16 @@
 	<build>
 		<plugins>
 			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-release-plugin</artifactId>
-        		<version>3.0.1</version>
-     		 </plugin>
+  				<groupId>org.apache.maven.plugins</groupId>
+  				<artifactId>maven-release-plugin</artifactId>
+ 				<version>2.5.3</version>
+  				<configuration>
+    				<autoVersionSubmodules>true</autoVersionSubmodules>
+    				<useReleaseProfile>false</useReleaseProfile>
+    				<releaseProfiles>release</releaseProfiles>
+    				<goals>deploy</goals>
+  				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
