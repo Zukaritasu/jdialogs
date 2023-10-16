@@ -27,7 +27,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/Zukaritasu/jdialogs.git</connection>
-		<developerConnection>scm:git:ssh://github.com/Zukaritasu/jdialogs.git</developerConnection>
+		<developerConnection>scm:git:ssh://github.com:Zukaritasu/jdialogs.git</developerConnection>
 		<url>https://github.com/Zukaritasu/jdialogs/tree/main</url>
 		<tag>jdialogs-1.9.9</tag>
 	</scm>
