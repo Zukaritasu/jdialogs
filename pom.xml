@@ -4,7 +4,7 @@
 
 	<groupId>com.zukadev</groupId>
 	<artifactId>jdialogs</artifactId>
-	<version>1.9.9-SNAPSHOT</version>
+	<version>1.9.9</version>
 	<name>com.zukadev.dialogs</name>
 	<description>About This library allows you to use common Windows dialogs in Java. The library does not have support for other platforms, only Windows.</description>
 	<url>https://github.com/Zukaritasu/jdialogs</url>
