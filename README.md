@@ -35,11 +35,10 @@ The library has not been fully tested in case of the use of threads or any actio
 <dependency>
    <groupId>com.zukadev</groupId>
    <artifactId>jdialogs</artifactId>
-   <version>1.9.6-SNAPSHOT</version>
+   <version>1.9.9</version>
 </dependency>
 ```
 
 ## More information
 
 * [Examples](./examples)
-* [Windows Common Dialogs Documentation](./javadoc)
