@@ -6,4 +6,4 @@ Specification-Vendor: Zukaritasu
 Specification-Version: 1.9
 Implementation-Title: Windows Common Dialogs
 Implementation-Vendor: Zukaritasu
-Implementation-Version: 1.9.5
+Implementation-Version: 1.9.6
