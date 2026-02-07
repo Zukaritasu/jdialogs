@@ -1,0 +1,10 @@
+#// File: vstudio/cpp.hint
+#// Helper macros for declaring JNI native functions in C/C++.
+#// - `JNIFUNCTION(type)` expands to `extern "C" JNIEXPORT type JNICALL`:
+#//   ensures C linkage (no name mangling) and the JNI export/calling convention.
+#// - `JNIPARAMS` expands to the common parameters `JNIEnv* env, jobject obj`.
+#// Example usage:
+#//   JNIFUNCTION(void) Java_com_example_MyClass_myMethod(JNIPARAMS, jint value) { /* ... */ }
+#
+#define JNIFUNCTION(type) extern "C" JNIEXPORT type JNICALL
+#define JNIPARAMS JNIEnv* env, jobject obj
