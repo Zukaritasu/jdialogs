@@ -33,7 +33,8 @@
                              ((GetGValue(rgb) & 0xff) <<  8) | \
                              ((GetBValue(rgb) & 0xff) <<  0))
 
-#define STRING_PATH "Ljava/lang/String;"
+constexpr auto STRING_PATH = "Ljava/lang/String;";
+
 // Check jobject, jmethodID, jfieldID, etc... 
 #define CHECK_NULL(obj) if (obj == NULL) return JNI_FALSE;
 #define CHECK_NULL_OOM(obj) if (obj == NULL) return E_OUTOFMEMORY;
