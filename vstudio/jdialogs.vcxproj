@@ -19,21 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\native\dllmain.cpp" />
-    <ClCompile Include="..\native\jbase.cpp" />
-    <ClCompile Include="..\native\jcolordlg.cpp" />
-    <ClCompile Include="..\native\jfiledlg.cpp" />
-    <ClCompile Include="..\native\jfolderbrowserdlg.cpp" />
-    <ClCompile Include="..\native\jfontdlg.cpp" />
-    <ClCompile Include="..\native\jmessageboxdlg.cpp" />
+    <ClCompile Include="..\native\com\zukadev\dialogs\dllmain.cpp" />
+    <ClCompile Include="..\native\com\zukadev\dialogs\jbase.cpp" />
+    <ClCompile Include="..\native\com\zukadev\dialogs\jcolordlg.cpp" />
+    <ClCompile Include="..\native\com\zukadev\dialogs\jfiledlg.cpp" />
+    <ClCompile Include="..\native\com\zukadev\dialogs\jfolderbrowserdlg.cpp" />
+    <ClCompile Include="..\native\com\zukadev\dialogs\jfontdlg.cpp" />
+    <ClCompile Include="..\native\com\zukadev\dialogs\jmessageboxdlg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\native\jbase.hpp" />
-    <ClInclude Include="..\native\jcolordlg.hpp" />
-    <ClInclude Include="..\native\jfiledlg.hpp" />
-    <ClInclude Include="..\native\jfolderbrowserdlg.hpp" />
-    <ClInclude Include="..\native\jfontdlg.hpp" />
-    <ClInclude Include="..\native\jmessageboxdlg.hpp" />
+    <ClInclude Include="..\native\com\zukadev\dialogs\jbase.hpp" />
+    <ClInclude Include="..\native\com\zukadev\dialogs\jcolordlg.hpp" />
+    <ClInclude Include="..\native\com\zukadev\dialogs\jfiledlg.hpp" />
+    <ClInclude Include="..\native\com\zukadev\dialogs\jfolderbrowserdlg.hpp" />
+    <ClInclude Include="..\native\com\zukadev\dialogs\jfontdlg.hpp" />
+    <ClInclude Include="..\native\com\zukadev\dialogs\jmessageboxdlg.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -113,7 +113,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -130,7 +130,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -145,7 +145,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
@@ -166,7 +166,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
