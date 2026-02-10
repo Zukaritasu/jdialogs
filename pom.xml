@@ -4,7 +4,7 @@
 
 	<groupId>com.zukadev</groupId>
 	<artifactId>jdialogs</artifactId>
-	<version>2.0.10</version>
+	<version>2.0.14</version>
 	<name>com.zukadev.dialogs</name>
 	<description>About This library allows you to use common Windows dialogs in Java. The library does not have support for other platforms, only Windows.</description>
 	<url>https://github.com/Zukaritasu/jdialogs</url>
@@ -29,7 +29,7 @@
 		<connection>scm:git:git://github.com/Zukaritasu/jdialogs.git</connection>
 		<developerConnection>scm:git:git@github.com:Zukaritasu/jdialogs.git</developerConnection>
 		<url>https://github.com/Zukaritasu/jdialogs/tree/main</url>
-		<tag>jdialogs-2.0.10</tag>
+		<tag>jdialogs-2.0.14</tag>
 	</scm>
 
 	<properties>
@@ -48,6 +48,24 @@
 
 	<build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>sign</id>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <keystore>${jarsigner.keystore}</keystore>
+                    <alias>${jarsigner.alias}</alias>
+                    <storepass>${jarsigner.storepass}</storepass>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>

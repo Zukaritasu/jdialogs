@@ -1,6 +1,4 @@
 //{{NO_DEPENDENCIES}}
-// Archivo de inclusión generado de Microsoft Visual C++.
-// Usado por resource.rc
 //
 #define VS_VERSION_INFO                 1
 #define IDC_STATIC                      -1

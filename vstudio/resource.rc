@@ -50,8 +50,8 @@ LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_VENEZUELA
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,9,6,1
- PRODUCTVERSION 1,9,6,1
+ FILEVERSION 2,0,14,1
+ PRODUCTVERSION 2,0,14,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -68,12 +68,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Zukaritasu Developer"
             VALUE "FileDescription", "Windows Common Dialogs"
-            VALUE "FileVersion", "1.9.6.1"
+            VALUE "FileVersion", "2.0.14.1"
             VALUE "InternalName", "jdialogs-x64.dll"
             VALUE "LegalCopyright", "Copyright (c) 2023 Zukaritasu"
             VALUE "OriginalFilename", "jdialogs-x64.dll"
             VALUE "ProductName", "jdialogs"
-            VALUE "ProductVersion", "1.9.6.1"
+            VALUE "ProductVersion", "2.0.14.1"
         END
     END
     BLOCK "VarFileInfo"

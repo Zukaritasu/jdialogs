@@ -38,12 +38,19 @@ jobs:
         New-Item -ItemType Directory -Force -Path src/main/resources/lib
         Copy-Item -Path "vstudio/x64/Release/jdialogs-x64.dll" -Destination "src/main/resources/lib/jdialogs-x64.dll"
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - name: Setup Keystore
+      shell: powershell
+      run: |
+        $bytes = [System.Convert]::FromBase64String("${{ secrets.KEYSTORE_BASE64 }}")
+        [System.IO.File]::WriteAllBytes("${{ github.workspace }}\zukaritasu.jks", $bytes)
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn -B -X clean deploy "-Dgpg.passphrase=${env:GPG_PASSPHRASE}"
+      run: |
+        mvn -B -X clean deploy `
+        "-Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}" `
+        "-Djarsigner.keystore=zukaritasu.jks" `
+        "-Djarsigner.storepass=${{ secrets.KEYSTORE_PASSWORD }}" `
+        "-Djarsigner.alias=general-key"
       env:
         MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
