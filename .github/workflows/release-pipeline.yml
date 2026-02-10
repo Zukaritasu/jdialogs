@@ -1,0 +1,49 @@
+
+name: Release Pipeline (Native DLL + Maven)
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up JDK 17
+      uses: actions/setup-java@v5
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        server-id: central # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: CENTRAL_USERNAME
+        server-password: CENTRAL_PASSWORD
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        gpg-passphrase: GPG_PASSPHRASE
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2.0.0
+
+    - name: Build Native DLL (x64)
+      run: msbuild /m /p:Configuration=Release /p:Platform=x64 ./vstudio/jdialogs.vcxproj
+
+    - name: Prepare Maven Resources
+      shell: powershell
+      run: |
+        New-Item -ItemType Directory -Force -Path src/main/resources/lib
+        Copy-Item -Path "vstudio/x64/Release/jdialogs-x64.dll" -Destination "src/main/resources/lib/jdialogs-x64.dll"
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Publish to GitHub Packages Apache Maven
+      run: mvn -B clean deploy
+      env:
+        MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

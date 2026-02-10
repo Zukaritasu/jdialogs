@@ -12,7 +12,7 @@ on:
     branches: [ "main" ]
 
 env:
-  SOLUTION_FILE_PATH: ./vstudio/jdialogs.sln
+  PROJECT_FILE_PATH: ./vstudio/jdialogs.vcxproj
 
 permissions:
   contents: read
@@ -27,16 +27,22 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2.0.0
 
+    - name: Set up JDK (for native includes)
+      id: setup-java
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '17'
+
+    - name: Export JDK_INCLUDE
+      run: echo "JDK_INCLUDE=${{ steps.setup-java.outputs.java-home }}\\include" >> $Env:GITHUB_ENV
+
     - name: Build-Release-x64
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=Release /p:Platform=x64 ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=Release /p:Platform=x64 ${{env.PROJECT_FILE_PATH}}
     - name: Build-Debug-x64
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=Debug /p:Platform=x64 ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=Debug /p:Platform=x64 ${{env.PROJECT_FILE_PATH}}
     - name: Build-Release-x86
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=Release /p:Platform=Win32 ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=Release /p:Platform=Win32 ${{env.PROJECT_FILE_PATH}}
     - name: Build-Debug-x86
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=Debug /p:Platform=Win32 ${{env.SOLUTION_FILE_PATH}}
-      
+      run: msbuild /m /p:Configuration=Debug /p:Platform=Win32 ${{env.PROJECT_FILE_PATH}}
+
