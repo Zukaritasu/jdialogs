@@ -7,4 +7,5 @@
 #//   JNIFUNCTION(void) Java_com_example_MyClass_myMethod(JNIPARAMS, jint value) { /* ... */ }
 #
 #define JNIFUNCTION(type) extern "C" JNIEXPORT type JNICALL
-#define JNIPARAMS JNIEnv* env, jobject obj
+#define JNIPARAMS JNIEnv* env, jobject obj// Los archivos de sugerencia ayudan al IDE de Visual Studio a interpretar los identificadores de Visual C++
+#define JNIFUNCTION(type)
