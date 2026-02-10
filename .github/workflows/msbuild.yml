@@ -34,11 +34,6 @@ jobs:
         distribution: temurin
         java-version: '17'
 
-    - name: Export JDK_INCLUDE
-      shell: pwsh
-      run: |
-        echo "INCLUDE=$env:JAVA_HOME\include;$env:JAVA_HOME\include\win32;$env:INCLUDE" >> $env:GITHUB_ENV
-
     - name: Build-Release-x64
       run: msbuild /m /p:Configuration=Release /p:Platform=x64 ${{env.PROJECT_FILE_PATH}}
     - name: Build-Debug-x64
@@ -47,4 +42,3 @@ jobs:
       run: msbuild /m /p:Configuration=Release /p:Platform=Win32 ${{env.PROJECT_FILE_PATH}}
     - name: Build-Debug-x86
       run: msbuild /m /p:Configuration=Debug /p:Platform=Win32 ${{env.PROJECT_FILE_PATH}}
-
