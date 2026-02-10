@@ -21,10 +21,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         server-id: central # Value of the distributionManagement/repository/id field of the pom.xml
-        server-username: ${{ secrets.CENTRAL_USERNAME }}
-        server-password: ${{ secrets.CENTRAL_PASSWORD }}
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-        gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        gpg-passphrase: GPG_PASSPHRASE
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2.0.0
@@ -42,7 +42,7 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn -B -X clean deploy
+      run: mvn -B -X clean deploy -Dgpg.passphrase=$env:GPG_PASSPHRASE
       env:
         MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
