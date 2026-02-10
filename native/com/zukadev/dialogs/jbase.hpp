@@ -1,0 +1,53 @@
+// Copyright (C) 2021-2026 Zukaritasu
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#pragma once
+
+#include <Windows.h>
+
+#include <jni.h>
+
+#pragma warning(disable : 4996) // ignore deprecated
+
+#define JNIFUNCTION(type) extern "C" JNIEXPORT type JNICALL
+// The default parameters of each native function
+#define JNIPARAMS JNIEnv *env, jobject obj
+
+#define RGBATORGB(rgba) \
+    RGB(((rgba >> 16) & 0xff), ((rgba >> 8) & 0xff), (rgba & 0xff))
+
+#define RGBTORGBA(rgb)                                     \
+    (jint)((255U << 24) | ((GetRValue(rgb) & 0xff) << 16) | \
+           ((GetGValue(rgb) & 0xff) << 8) |                \
+           ((GetBValue(rgb) & 0xff) << 0))
+
+constexpr auto STRING_PATH = "Ljava/lang/String;";
+
+void ShowError(JNIEnv *env, DWORD code = 0);
+void ShowOutOfMemory(JNIEnv *env, const char *comment = NULL);
+void ThrowNew(JNIEnv *env, const char *class_name, const char *comment = NULL);
+
+extern "C"
+{
+    JNIEXPORT jstring JNICALL Java_com_zukadev_dialogs_WindowsException_getFormatMessage(
+        JNIEnv *env,
+        jobject obj,
+        jint code);
+
+    JNIEXPORT jlong JNICALL Java_com_zukadev_dialogs_CommonDialog_getHWnd0(
+        JNIEnv *env,
+        jobject obj,
+        jobject window);
+}
