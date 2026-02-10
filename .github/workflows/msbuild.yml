@@ -37,8 +37,7 @@ jobs:
     - name: Export JDK_INCLUDE
       shell: pwsh
       run: |
-        $java_home = "${{ steps.setup-java.outputs.java-home }}"
-        echo "INCLUDE=$java_home\include;$java_home\include\win32;$env:INCLUDE" >> $env:GITHUB_ENV
+        echo "INCLUDE=$env:JAVA_HOME\include;$env:JAVA_HOME\include\win32;$env:INCLUDE" >> $env:GITHUB_ENV
 
     - name: Build-Release-x64
       run: msbuild /m /p:Configuration=Release /p:Platform=x64 ${{env.PROJECT_FILE_PATH}}
