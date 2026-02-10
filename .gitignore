@@ -10,6 +10,8 @@
 /vstudio/jdialogs/*
 /vstudio/jdialogs.sdf
 /vstudio/jdialogs.vcxproj.filters
+/vstudio/jdialogs.sln
+/vstudio/jdialogs.vcxproj.user
 /vstudio/resource.aps
 /src/test/MainTest.java
 /*.zip
