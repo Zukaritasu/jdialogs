@@ -3,7 +3,7 @@
 #include "resource.h"
 #include "winres.h"
 /////////////////////////////////////////////////////////////////////////////
-// Español (México) resources
+// Spanish
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
@@ -33,12 +33,12 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Español (México) resources
+#endif    // 
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Español (Venezuela) resources
+// Spanish
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESV)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_VENEZUELA
@@ -82,7 +82,7 @@ BEGIN
     END
 END
 
-#endif    // Español (Venezuela) resources
+#endif    // Spanish (Venezuela) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
