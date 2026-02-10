@@ -42,7 +42,7 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn -B -X clean deploy -Dgpg.passphrase=$env:GPG_PASSPHRASE
+      run: mvn -B -X clean deploy "-Dgpg.passphrase=${env:GPG_PASSPHRASE}"
       env:
         MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
