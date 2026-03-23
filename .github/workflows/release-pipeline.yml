@@ -27,7 +27,7 @@ jobs:
         gpg-passphrase: GPG_PASSPHRASE
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2.0.0
+      uses: microsoft/setup-msbuild@v3.0.0
 
     - name: Build Native DLL (x64)
       run: msbuild /m /p:Configuration=Release /p:Platform=x64 ./vstudio/jdialogs.vcxproj
